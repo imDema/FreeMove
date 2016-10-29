@@ -104,7 +104,6 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Enabled = false;
             this.checkBox1.Location = new System.Drawing.Point(16, 65);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(154, 17);
@@ -116,7 +115,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(564, 130);
+            this.ClientSize = new System.Drawing.Size(559, 130);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button_Move);
             this.Controls.Add(this.button_BrowseTo);

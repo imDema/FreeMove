@@ -22,16 +22,16 @@ namespace FreeMove
 
         private void button_Move_Click(object sender, EventArgs e)
         {
-            string from, to;
-            from = textBox_From.Text;
-            to = textBox_To.Text;
+            string source, destination;
+            source = textBox_From.Text;
+            destination = textBox_To.Text + "\\" + Path.GetFileName(source);
 
-            if (CheckFolders(from, to ))
+            if (CheckFolders(source, destination ))
             {
-                Directory.Move(from, to);
+                Directory.Move(source, destination);
                 Process mkink = new Process();
                 mkink.StartInfo.FileName = "cmd.exe";
-                mkink.StartInfo.Arguments = "/c mklink /j " + from + " " + to;
+                mkink.StartInfo.Arguments = "/c mklink /j " + source + " " + destination;
                 mkink.StartInfo.UseShellExecute = false;
                 mkink.StartInfo.RedirectStandardOutput = true;
                 mkink.Start();
@@ -39,6 +39,14 @@ namespace FreeMove
                 string output = mkink.StandardOutput.ReadToEnd();
                 mkink.WaitForExit();
                 WriteLog(output);
+
+                if(checkBox1.Checked)
+                {
+                    DirectoryInfo olddir = new DirectoryInfo(source);
+                    var attrib = File.GetAttributes(source);
+                    olddir.Attributes = attrib | FileAttributes.Hidden;
+                }
+
                 MessageBox.Show(ReadLog());
             }
             else
@@ -77,12 +85,12 @@ namespace FreeMove
             }
             if (Directory.Exists(topath))
             {
-                errors += "ERROR, destination folder already exists";
+                errors += "ERROR, destination folder already contains a folder with the same name";
                 passing = false;
             }
-            if(!Directory.Exists(Directory.GetParent(topath).FullName))
+            if (!Directory.Exists(Directory.GetParent(topath).FullName))
             {
-                errors += "ERROR, parent of destination folder doesn't exist";
+                errors += "destination folder doesn't exist";
                 passing = false;
             }
 
@@ -123,7 +131,6 @@ namespace FreeMove
         private string GetTempFolder()
         {
             string dir = Environment.GetEnvironmentVariable("TEMP") + @"\FreeMove";
-            //if(!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
             return dir;
         }
