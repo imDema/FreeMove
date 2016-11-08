@@ -20,7 +20,7 @@ namespace FreeMove
             InitializeComponent();
         }
 
-        private void button_Move_Click(object sender, EventArgs e)
+        private async void button_Move_Click(object sender, EventArgs e)
         {
             string source, destination;
             source = textBox_From.Text;
@@ -28,7 +28,20 @@ namespace FreeMove
 
             if (CheckFolders(source, destination ))
             {
-                Directory.Move(source, destination);
+                //MOVING
+
+                if(Directory.GetDirectoryRoot(source) == Directory.GetDirectoryRoot(destination))
+                    Directory.Move(source, destination);
+                else
+                {
+                    ProgressDialog pdiag = new ProgressDialog();
+                    pdiag.Show();
+                    await Task.Run(() => MoveFolder(source, destination));
+                    pdiag.Close();
+                    pdiag.Dispose();
+                }
+
+                //LINKING
                 Process mkink = new Process();
                 mkink.StartInfo.FileName = "cmd.exe";
                 mkink.StartInfo.Arguments = "/c mklink /j " + source + " " + destination;
@@ -55,6 +68,16 @@ namespace FreeMove
                 textBox_To.Text = "";
                 textBox_From.Focus();
             }
+        }
+
+        private void MoveFolder(string source, string destination)
+        {
+            CopyFolder(source, destination);
+            //TEMPORARY FOR TESTING
+            //Directory.Move(source, Path.Combine(Directory.GetParent(source).FullName, "safecopy"));
+
+            //DEFINITIVE VERSION
+            Directory.Delete(source, true);
         }
 
         private bool CheckFolders(string frompath, string topath)
@@ -98,6 +121,26 @@ namespace FreeMove
                 MessageBox.Show(errors);
 
             return passing;
+        }
+
+        private void CopyFolder(string sourceFolder, string destFolder)
+        {
+            if (!Directory.Exists(destFolder))
+                Directory.CreateDirectory(destFolder);
+            string[] files = Directory.GetFiles(sourceFolder);
+            foreach (string file in files)
+            {
+                string name = Path.GetFileName(file);
+                string dest = Path.Combine(destFolder, name);
+                File.Copy(file, dest);
+            }
+            string[] folders = Directory.GetDirectories(sourceFolder);
+            foreach (string folder in folders)
+            {
+                string name = Path.GetFileName(folder);
+                string dest = Path.Combine(destFolder, name);
+                CopyFolder(folder, dest);
+            }
         }
 
         private void button_BrowseFrom_Click(object sender, EventArgs e)
