@@ -45,18 +45,24 @@
             this.label_Progress.AutoSize = true;
             this.label_Progress.Location = new System.Drawing.Point(12, 9);
             this.label_Progress.Name = "label_Progress";
-            this.label_Progress.Size = new System.Drawing.Size(86, 13);
+            this.label_Progress.Size = new System.Drawing.Size(131, 13);
             this.label_Progress.TabIndex = 1;
-            this.label_Progress.Text = "Moving file x of y";
+            this.label_Progress.Text = "Moving files, please wait...";
             // 
             // ProgressDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 70);
+            this.ControlBox = false;
             this.Controls.Add(this.label_Progress);
             this.Controls.Add(this.progressBar1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "ProgressDialog";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.Text = "ProgressDialog";
             this.ResumeLayout(false);
             this.PerformLayout();

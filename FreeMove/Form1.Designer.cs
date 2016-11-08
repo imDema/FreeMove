@@ -124,6 +124,8 @@
             this.Controls.Add(this.button_BrowseFrom);
             this.Controls.Add(this.textBox_From);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Free Move";
             this.ResumeLayout(false);
