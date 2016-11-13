@@ -34,9 +34,11 @@ namespace FreeMove
                     Directory.Move(source, destination);
                 else
                 {
-                    ProgressDialog pdiag = new ProgressDialog();
+                    ProgressDialog pdiag = new ProgressDialog(this);
                     pdiag.Show();
+                    this.Enabled = false;
                     await Task.Run(() => MoveFolder(source, destination));
+                    this.Enabled = true;
                     pdiag.Close();
                     pdiag.Dispose();
                 }
@@ -44,7 +46,7 @@ namespace FreeMove
                 //LINKING
                 Process mkink = new Process();
                 mkink.StartInfo.FileName = "cmd.exe";
-                mkink.StartInfo.Arguments = "/c mklink /j " + source + " " + destination;
+                mkink.StartInfo.Arguments = "/c \"mklink /j " + source + " " + destination +"\"";
                 mkink.StartInfo.UseShellExecute = false;
                 mkink.StartInfo.RedirectStandardOutput = true;
                 mkink.Start();
@@ -60,7 +62,9 @@ namespace FreeMove
                     olddir.Attributes = attrib | FileAttributes.Hidden;
                 }
 
-                MessageBox.Show(ReadLog());
+                MessageBox.Show(output);
+                textBox_From.Text = "";
+                textBox_To.Text = "";
             }
             else
             {
@@ -163,7 +167,7 @@ namespace FreeMove
 
         private void WriteLog(string log)
         {
-            File.WriteAllText(GetTempFolder() + @"\log.log", log);
+            File.AppendAllText(GetTempFolder() + @"\log.log", log);
         }
 
         private string ReadLog()
@@ -176,6 +180,11 @@ namespace FreeMove
             string dir = Environment.GetEnvironmentVariable("TEMP") + @"\FreeMove";
                 Directory.CreateDirectory(dir);
             return dir;
+        }
+
+        private void button_Close_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

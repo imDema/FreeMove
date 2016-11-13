@@ -37,7 +37,7 @@
             this.progressBar1.Location = new System.Drawing.Point(12, 35);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(260, 23);
-            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBar1.TabIndex = 0;
             // 
             // label_Progress
@@ -63,7 +63,7 @@
             this.Name = "ProgressDialog";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "ProgressDialog";
+            this.Text = "Moving Files...";
             this.ResumeLayout(false);
             this.PerformLayout();
 

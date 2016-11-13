@@ -37,6 +37,7 @@
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.button_Move = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.button_Close = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -111,11 +112,22 @@
             this.checkBox1.Text = "Set original folder to hidden";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
+            // button_Close
+            // 
+            this.button_Close.Location = new System.Drawing.Point(13, 95);
+            this.button_Close.Name = "button_Close";
+            this.button_Close.Size = new System.Drawing.Size(75, 23);
+            this.button_Close.TabIndex = 7;
+            this.button_Close.Text = "Close";
+            this.button_Close.UseVisualStyleBackColor = true;
+            this.button_Close.Click += new System.EventHandler(this.button_Close_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(559, 130);
+            this.Controls.Add(this.button_Close);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button_Move);
             this.Controls.Add(this.button_BrowseTo);
@@ -144,6 +156,7 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button button_Move;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button button_Close;
     }
 }
 

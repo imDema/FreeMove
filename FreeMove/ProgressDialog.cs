@@ -12,8 +12,9 @@ namespace FreeMove
 {
     public partial class ProgressDialog : Form
     {
-        public ProgressDialog()
+        public ProgressDialog(Form1 parent)
         {
+            Owner = parent;
             InitializeComponent();
         }
     }
