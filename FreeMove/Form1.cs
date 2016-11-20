@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Runtime.InteropServices;
 
 namespace FreeMove
 {
@@ -29,7 +30,6 @@ namespace FreeMove
             if (CheckFolders(source, destination ))
             {
                 //MOVING
-
                 if(Directory.GetDirectoryRoot(source) == Directory.GetDirectoryRoot(destination))
                     Directory.Move(source, destination);
                 else
@@ -37,51 +37,69 @@ namespace FreeMove
                     ProgressDialog pdiag = new ProgressDialog(this);
                     pdiag.Show();
                     this.Enabled = false;
-                    await Task.Run(() => MoveFolder(source, destination));
+
+                    await Task.Run(() => MoveFolder(source, destination, false));
+
                     this.Enabled = true;
                     pdiag.Close();
                     pdiag.Dispose();
                 }
 
                 //LINKING
-                Process mkink = new Process();
-                mkink.StartInfo.FileName = "cmd.exe";
-                mkink.StartInfo.Arguments = "/c \"mklink /j " + source + " " + destination +"\"";
-                mkink.StartInfo.UseShellExecute = false;
-                mkink.StartInfo.RedirectStandardOutput = true;
-                mkink.Start();
-
-                string output = mkink.StandardOutput.ReadToEnd();
-                mkink.WaitForExit();
-                WriteLog(output);
-
-                if(checkBox1.Checked)
+                if(MakeLink(destination, source))
                 {
-                    DirectoryInfo olddir = new DirectoryInfo(source);
-                    var attrib = File.GetAttributes(source);
-                    olddir.Attributes = attrib | FileAttributes.Hidden;
+                    if (checkBox1.Checked)
+                    {
+                        DirectoryInfo olddir = new DirectoryInfo(source);
+                        var attrib = File.GetAttributes(source);
+                        olddir.Attributes = attrib | FileAttributes.Hidden;
+                    }
+                    MessageBox.Show("Done.");
+                    Reset();
                 }
-
-                MessageBox.Show(output);
-                textBox_From.Text = "";
-                textBox_To.Text = "";
+                else
+                {
+                    MessageBox.Show("ERROR creating symbolic link.\nThe folder is in the new position but the link could not be created.");
+                }
             }
             else
             {
-                textBox_From.Text = "";
-                textBox_To.Text = "";
-                textBox_From.Focus();
+                
             }
         }
 
-        private void MoveFolder(string source, string destination)
-        {
-            CopyFolder(source, destination);
-            //TEMPORARY FOR TESTING
-            //Directory.Move(source, Path.Combine(Directory.GetParent(source).FullName, "safecopy"));
 
-            //DEFINITIVE VERSION
-            Directory.Delete(source, true);
+
+        #region SymLink
+        [DllImport("kernel32.dll")]
+        static extern bool CreateSymbolicLink(
+        string lpSymlinkFileName, string lpTargetFileName, SymbolicLink dwFlags);
+
+        enum SymbolicLink
+        {
+            File = 0,
+            Directory = 1
+        }
+
+        private bool MakeLink(string directory, string symlink)
+        {
+            return CreateSymbolicLink(symlink, directory, SymbolicLink.Directory);
+        }
+        #endregion
+
+        #region PrivateMethods
+        private void MoveFolder(string source, string destination, bool DontReplace)
+        {
+            CopyFolder(source, destination, DontReplace);
+            try
+            {
+                Directory.Delete(source, true);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                MoveFolder(destination, source, true);
+                throw ex;
+            }
         }
 
         private bool CheckFolders(string frompath, string topath)
@@ -121,13 +139,32 @@ namespace FreeMove
                 passing = false;
             }
 
+            //TODO check if file is in use
+
+            //FileStream stream = null;
+
+            //try
+            //{
+            //    stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
+            //}
+            //catch (IOException)
+            //{
+            //    passing = false;
+            //}
+            //finally
+            //{
+            //    if (stream != null)
+            //        stream.Close();
+            //}
+
+
             if (!passing)
                 MessageBox.Show(errors);
 
             return passing;
         }
 
-        private void CopyFolder(string sourceFolder, string destFolder)
+        private void CopyFolder(string sourceFolder, string destFolder, bool DontReplace)
         {
             if (!Directory.Exists(destFolder))
                 Directory.CreateDirectory(destFolder);
@@ -136,17 +173,45 @@ namespace FreeMove
             {
                 string name = Path.GetFileName(file);
                 string dest = Path.Combine(destFolder, name);
-                File.Copy(file, dest);
+                if(!(DontReplace && File.Exists(dest)))
+                    File.Copy(file, dest);
             }
             string[] folders = Directory.GetDirectories(sourceFolder);
             foreach (string folder in folders)
             {
                 string name = Path.GetFileName(folder);
                 string dest = Path.Combine(destFolder, name);
-                CopyFolder(folder, dest);
+                CopyFolder(folder, dest, DontReplace);
             }
         }
 
+        private void Reset()
+        {
+            textBox_From.Text = "";
+            textBox_To.Text = "";
+            textBox_From.Focus();
+        }
+
+        private void WriteLog(string log)
+        {
+            File.AppendAllText(GetTempFolder() + @"\log.log", log);
+        }
+
+        private string ReadLog()
+        {
+            return File.ReadAllText(GetTempFolder() + @"\log.log");
+        }
+
+        private string GetTempFolder()
+        {
+            string dir = Environment.GetEnvironmentVariable("TEMP") + @"\FreeMove";
+            Directory.CreateDirectory(dir);
+            return dir;
+        }
+
+        #endregion
+
+        #region EventHandlers
         private void button_BrowseFrom_Click(object sender, EventArgs e)
         {
             DialogResult result = folderBrowserDialog1.ShowDialog();
@@ -165,26 +230,10 @@ namespace FreeMove
             }
         }
 
-        private void WriteLog(string log)
-        {
-            File.AppendAllText(GetTempFolder() + @"\log.log", log);
-        }
-
-        private string ReadLog()
-        {
-            return File.ReadAllText(GetTempFolder() + @"\log.log");
-        }
-
-        private string GetTempFolder()
-        {
-            string dir = Environment.GetEnvironmentVariable("TEMP") + @"\FreeMove";
-                Directory.CreateDirectory(dir);
-            return dir;
-        }
-
         private void button_Close_Click(object sender, EventArgs e)
         {
             Close();
         }
+        #endregion
     }
 }

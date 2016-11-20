@@ -92,6 +92,10 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "To:";
             // 
+            // folderBrowserDialog1
+            // 
+            this.folderBrowserDialog1.RootFolder = System.Environment.SpecialFolder.MyComputer;
+            // 
             // button_Move
             // 
             this.button_Move.Location = new System.Drawing.Point(472, 95);
