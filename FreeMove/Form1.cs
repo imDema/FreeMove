@@ -29,16 +29,20 @@ namespace FreeMove
 
             if (CheckFolders(source, destination ))
             {
+                bool success;
                 //MOVING
                 if(Directory.GetDirectoryRoot(source) == Directory.GetDirectoryRoot(destination))
+                {
                     Directory.Move(source, destination);
+                    success = true;
+                }
                 else
                 {
                     ProgressDialog pdiag = new ProgressDialog(this);
                     pdiag.Show();
                     this.Enabled = false;
 
-                    await Task.Run(() => MoveFolder(source, destination, false));
+                    success = await Task.Run(() => MoveFolder(source, destination, false));
 
                     this.Enabled = true;
                     pdiag.Close();
@@ -46,25 +50,24 @@ namespace FreeMove
                 }
 
                 //LINKING
-                if(MakeLink(destination, source))
+                if (success)
                 {
-                    if (checkBox1.Checked)
+                    if (MakeLink(destination, source))
                     {
-                        DirectoryInfo olddir = new DirectoryInfo(source);
-                        var attrib = File.GetAttributes(source);
-                        olddir.Attributes = attrib | FileAttributes.Hidden;
+                        if (checkBox1.Checked)
+                        {
+                            DirectoryInfo olddir = new DirectoryInfo(source);
+                            var attrib = File.GetAttributes(source);
+                            olddir.Attributes = attrib | FileAttributes.Hidden;
+                        }
+                        MessageBox.Show("Done.");
+                        Reset();
                     }
-                    MessageBox.Show("Done.");
-                    Reset();
+                    else
+                    {
+                        MessageBox.Show("ERROR creating symbolic link.\nThe folder is in the new position but the link could not be created.");
+                    }
                 }
-                else
-                {
-                    MessageBox.Show("ERROR creating symbolic link.\nThe folder is in the new position but the link could not be created.");
-                }
-            }
-            else
-            {
-                
             }
         }
 
@@ -88,17 +91,19 @@ namespace FreeMove
         #endregion
 
         #region PrivateMethods
-        private void MoveFolder(string source, string destination, bool DontReplace)
+        private bool MoveFolder(string source, string destination, bool DontReplace)
         {
             CopyFolder(source, destination, DontReplace);
             try
             {
                 Directory.Delete(source, true);
+                return true;
             }
             catch (UnauthorizedAccessException ex)
             {
                 MoveFolder(destination, source, true);
-                throw ex;
+                MessageBox.Show("ERROR, a file could not be moved, it may be in use or you may not have the required permissions.\n\nDETAILS: " + ex.Message, "Unauthorized Access");
+                return false;
             }
         }
 
