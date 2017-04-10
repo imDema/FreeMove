@@ -102,7 +102,7 @@ namespace FreeMove
             catch (UnauthorizedAccessException ex)
             {
                 MoveFolder(destination, source, true);
-                MessageBox.Show("ERROR, a file could not be moved, it may be in use or you may not have the required permissions.\n\nDETAILS: " + ex.Message, "Unauthorized Access");
+                MessageBox.Show("ERROR: a file could not be moved, it may be in use or you may not have the required permissions.\n\nTry running this program as administrator and/or close any program that is using the file specified in the details\n\nDETAILS: " + ex.Message, "Unauthorized Access");
                 return false;
             }
         }
