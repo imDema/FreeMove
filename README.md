@@ -1,7 +1,5 @@
 # FreeMove
-## Move directories freely without breaking installations or shortcuts
-I created this program to be able to move installations folders from one drive to the other
-
+Move directories (even from one drive to another) freely without breaking installations or shortcuts
 If a program installs on C:\ by default or you want to move the installation folder of a program to somewhere else without breaking it you can use this program.
 ## How It works
 1. The files are moved to the new location
