@@ -7,4 +7,4 @@ If a program installs on C:\ by default or you want to move the installation fol
 ## Usage
 Just run the executable and use the GUI
 ## Screenshots
-![Screenshot](http://i.imgur.com/q0ZwOwn.png)
+![Screenshot](http://i.imgur.com/TQC6q0u.png)
