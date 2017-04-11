@@ -65,7 +65,7 @@
             this.button_BrowseFrom.TabIndex = 2;
             this.button_BrowseFrom.Text = "Browse...";
             this.button_BrowseFrom.UseVisualStyleBackColor = true;
-            this.button_BrowseFrom.Click += new System.EventHandler(this.button_BrowseFrom_Click);
+            this.button_BrowseFrom.Click += new System.EventHandler(this.Button_BrowseFrom_Click);
             // 
             // button_BrowseTo
             // 
@@ -75,7 +75,7 @@
             this.button_BrowseTo.TabIndex = 4;
             this.button_BrowseTo.Text = "Browse...";
             this.button_BrowseTo.UseVisualStyleBackColor = true;
-            this.button_BrowseTo.Click += new System.EventHandler(this.button_BrowseTo_Click);
+            this.button_BrowseTo.Click += new System.EventHandler(this.Button_BrowseTo_Click);
             // 
             // textBox_To
             // 
@@ -105,7 +105,7 @@
             this.button_Move.TabIndex = 6;
             this.button_Move.Text = "Move";
             this.button_Move.UseVisualStyleBackColor = true;
-            this.button_Move.Click += new System.EventHandler(this.button_Move_Click);
+            this.button_Move.Click += new System.EventHandler(this.Button_Move_Click);
             // 
             // checkBox1
             // 
@@ -125,7 +125,7 @@
             this.button_Close.TabIndex = 7;
             this.button_Close.Text = "Close";
             this.button_Close.UseVisualStyleBackColor = true;
-            this.button_Close.Click += new System.EventHandler(this.button_Close_Click);
+            this.button_Close.Click += new System.EventHandler(this.Button_Close_Click);
             // 
             // Form1
             // 
@@ -146,6 +146,7 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Free Move";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

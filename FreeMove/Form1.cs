@@ -21,7 +21,12 @@ namespace FreeMove
             InitializeComponent();
         }
 
-        private async void button_Move_Click(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            SetToolTips();
+        }
+
+        private async void Button_Move_Click(object sender, EventArgs e)
         {
             string source, destination;
             source = textBox_From.Text;
@@ -214,10 +219,18 @@ namespace FreeMove
             return dir;
         }
 
+        private void SetToolTips()
+        {
+            ToolTip Tip = new ToolTip();
+            Tip.SetToolTip(this.textBox_From, "Select the folder you want to move");
+            Tip.SetToolTip(this.textBox_To, "Select where you want to move the folder");
+            Tip.SetToolTip(this.checkBox1, "Select whether you want to hide the shortcut which is created in the old location or not");
+        }
+
         #endregion
 
         #region EventHandlers
-        private void button_BrowseFrom_Click(object sender, EventArgs e)
+        private void Button_BrowseFrom_Click(object sender, EventArgs e)
         {
             DialogResult result = folderBrowserDialog1.ShowDialog();
             if (result == DialogResult.OK)
@@ -226,7 +239,7 @@ namespace FreeMove
             }
         }
 
-        private void button_BrowseTo_Click(object sender, EventArgs e)
+        private void Button_BrowseTo_Click(object sender, EventArgs e)
         {
             DialogResult result = folderBrowserDialog1.ShowDialog();
             if (result == DialogResult.OK)
@@ -235,7 +248,7 @@ namespace FreeMove
             }
         }
 
-        private void button_Close_Click(object sender, EventArgs e)
+        private void Button_Close_Click(object sender, EventArgs e)
         {
             Close();
         }
