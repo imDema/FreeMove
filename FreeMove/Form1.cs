@@ -283,5 +283,10 @@ namespace FreeMove
             Close();
         }
         #endregion
+
+        private void GitHubToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/imDema/FreeMove");
+        }
     }
 }

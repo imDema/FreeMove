@@ -39,12 +39,16 @@
             this.button_Move = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button_Close = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gitHubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 13);
+            this.label1.Location = new System.Drawing.Point(15, 45);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(63, 13);
             this.label1.TabIndex = 0;
@@ -52,14 +56,14 @@
             // 
             // textBox_From
             // 
-            this.textBox_From.Location = new System.Drawing.Point(83, 13);
+            this.textBox_From.Location = new System.Drawing.Point(85, 45);
             this.textBox_From.Name = "textBox_From";
             this.textBox_From.Size = new System.Drawing.Size(383, 20);
             this.textBox_From.TabIndex = 1;
             // 
             // button_BrowseFrom
             // 
-            this.button_BrowseFrom.Location = new System.Drawing.Point(472, 13);
+            this.button_BrowseFrom.Location = new System.Drawing.Point(474, 45);
             this.button_BrowseFrom.Name = "button_BrowseFrom";
             this.button_BrowseFrom.Size = new System.Drawing.Size(75, 23);
             this.button_BrowseFrom.TabIndex = 2;
@@ -69,7 +73,7 @@
             // 
             // button_BrowseTo
             // 
-            this.button_BrowseTo.Location = new System.Drawing.Point(472, 39);
+            this.button_BrowseTo.Location = new System.Drawing.Point(474, 80);
             this.button_BrowseTo.Name = "button_BrowseTo";
             this.button_BrowseTo.Size = new System.Drawing.Size(75, 23);
             this.button_BrowseTo.TabIndex = 4;
@@ -79,7 +83,7 @@
             // 
             // textBox_To
             // 
-            this.textBox_To.Location = new System.Drawing.Point(83, 39);
+            this.textBox_To.Location = new System.Drawing.Point(85, 80);
             this.textBox_To.Name = "textBox_To";
             this.textBox_To.Size = new System.Drawing.Size(383, 20);
             this.textBox_To.TabIndex = 3;
@@ -87,7 +91,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 39);
+            this.label2.Location = new System.Drawing.Point(15, 80);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(23, 13);
             this.label2.TabIndex = 3;
@@ -99,7 +103,7 @@
             // 
             // button_Move
             // 
-            this.button_Move.Location = new System.Drawing.Point(472, 95);
+            this.button_Move.Location = new System.Drawing.Point(471, 143);
             this.button_Move.Name = "button_Move";
             this.button_Move.Size = new System.Drawing.Size(75, 23);
             this.button_Move.TabIndex = 6;
@@ -110,7 +114,7 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(16, 65);
+            this.checkBox1.Location = new System.Drawing.Point(18, 106);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(154, 17);
             this.checkBox1.TabIndex = 5;
@@ -119,7 +123,7 @@
             // 
             // button_Close
             // 
-            this.button_Close.Location = new System.Drawing.Point(13, 95);
+            this.button_Close.Location = new System.Drawing.Point(12, 143);
             this.button_Close.Name = "button_Close";
             this.button_Close.Size = new System.Drawing.Size(75, 23);
             this.button_Close.TabIndex = 7;
@@ -127,11 +131,38 @@
             this.button_Close.UseVisualStyleBackColor = true;
             this.button_Close.Click += new System.EventHandler(this.Button_Close_Click);
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.infoToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.menuStrip1.Size = new System.Drawing.Size(565, 24);
+            this.menuStrip1.TabIndex = 8;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // infoToolStripMenuItem
+            // 
+            this.infoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.gitHubToolStripMenuItem});
+            this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
+            this.infoToolStripMenuItem.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.infoToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.infoToolStripMenuItem.Text = "Info";
+            // 
+            // gitHubToolStripMenuItem
+            // 
+            this.gitHubToolStripMenuItem.Name = "gitHubToolStripMenuItem";
+            this.gitHubToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.gitHubToolStripMenuItem.Text = "GitHub";
+            this.gitHubToolStripMenuItem.Click += new System.EventHandler(this.GitHubToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(559, 130);
+            this.ClientSize = new System.Drawing.Size(565, 183);
             this.Controls.Add(this.button_Close);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button_Move);
@@ -141,12 +172,16 @@
             this.Controls.Add(this.button_BrowseFrom);
             this.Controls.Add(this.textBox_From);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Free Move";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -164,6 +199,9 @@
         private System.Windows.Forms.Button button_Move;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button button_Close;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem infoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem gitHubToolStripMenuItem;
     }
 }
 
