@@ -38,20 +38,20 @@ namespace FreeMove
                 //MOVING
                 if(Directory.GetDirectoryRoot(source) == Directory.GetDirectoryRoot(destination))
                 {
-                    Directory.Move(source, destination);
-                    success = true;
+                    try
+                    {
+                        Directory.Move(source, destination);
+                        success = true;
+                    }
+                    catch (IOException ex)
+                    {
+                        Unauthorized(ex);
+                        success = false;
+                    }
                 }
                 else
                 {
-                    ProgressDialog pdiag = new ProgressDialog(this);
-                    pdiag.Show();
-                    this.Enabled = false;
-
-                    success = await Task.Run(() => MoveFolder(source, destination, false));
-
-                    this.Enabled = true;
-                    pdiag.Close();
-                    pdiag.Dispose();
+                    success = await StartMoving(source, destination, false);
                 }
 
                 //LINKING
@@ -70,13 +70,34 @@ namespace FreeMove
                     }
                     else
                     {
-                        MessageBox.Show("ERROR creating symbolic link.\nThe folder is in the new position but the link could not be created.");
+                        var result = MessageBox.Show("ERROR creating symbolic link.\nThe folder is in the new position but the link could not be created.\nTry running as administrator\n\nDo you want to move the files back?", "ERROR, could not create a directory junction", MessageBoxButtons.YesNo);
+                        if(result == DialogResult.Yes)
+                        {
+                            await StartMoving(destination,source,true,"Wait, moving files back");
+                        }
                     }
                 }
             }
         }
 
+        private Task<bool> StartMoving(string source, string destination, bool DontReplace)
+        {
+            return StartMoving(source, destination, DontReplace, "Moving Files...");
+        }
 
+        private async Task<bool> StartMoving(string source, string destination, bool DontReplace, string ProgressMessage)
+        {
+            ProgressDialog pdiag = new ProgressDialog(this);
+            pdiag.Show();
+            this.Enabled = false;
+
+            bool res = await Task.Run(() => MoveFolder(source, destination, DontReplace));
+
+            this.Enabled = true;
+            pdiag.Close();
+            pdiag.Dispose();
+            return res;
+        }
 
         #region SymLink
         [DllImport("kernel32.dll")]
@@ -107,9 +128,14 @@ namespace FreeMove
             catch (UnauthorizedAccessException ex)
             {
                 MoveFolder(destination, source, true);
-                MessageBox.Show("ERROR: a file could not be moved, it may be in use or you may not have the required permissions.\n\nTry running this program as administrator and/or close any program that is using the file specified in the details\n\nDETAILS: " + ex.Message, "Unauthorized Access");
+                Unauthorized(ex);
                 return false;
             }
+        }
+
+        private void Unauthorized(Exception ex)
+        {
+            MessageBox.Show("ERROR: a file could not be moved, it may be in use or you may not have the required permissions.\n\nTry running this program as administrator and/or close any program that is using the file specified in the details\n\nDETAILS: " + ex.Message, "Unauthorized Access");
         }
 
         private bool CheckFolders(string frompath, string topath)
@@ -222,6 +248,10 @@ namespace FreeMove
         private void SetToolTips()
         {
             ToolTip Tip = new ToolTip();
+            Tip.ShowAlways = true;
+            Tip.AutoPopDelay = 5000;
+            Tip.InitialDelay = 600;
+            Tip.ReshowDelay = 500;
             Tip.SetToolTip(this.textBox_From, "Select the folder you want to move");
             Tip.SetToolTip(this.textBox_To, "Select where you want to move the folder");
             Tip.SetToolTip(this.checkBox1, "Select whether you want to hide the shortcut which is created in the old location or not");
