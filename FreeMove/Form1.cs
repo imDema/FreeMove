@@ -178,7 +178,7 @@ namespace FreeMove
             try
             {
                 System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(frompath);
-                File.Create(TestFile);
+                File.Create(TestFile).Close();
             }
             catch (UnauthorizedAccessException)
             {
