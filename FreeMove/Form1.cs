@@ -175,25 +175,6 @@ namespace FreeMove
                 passing = false;
             }
 
-            //TODO check if file is in use
-
-            //FileStream stream = null;
-
-            //try
-            //{
-            //    stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
-            //}
-            //catch (IOException)
-            //{
-            //    passing = false;
-            //}
-            //finally
-            //{
-            //    if (stream != null)
-            //        stream.Close();
-            //}
-
-
             if (!passing)
                 MessageBox.Show(errors);
 
