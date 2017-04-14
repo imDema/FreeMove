@@ -149,31 +149,48 @@ namespace FreeMove
             }
             catch (Exception)
             {
-                errors += "ERROR, invalid path name\n";
+                errors += "ERROR, invalid path name\n\n";
                 passing = false;
             }
             string pattern = "^[A-Z]:\\\\";
             if (!Regex.IsMatch(frompath,pattern) || !Regex.IsMatch(topath,pattern))
             {
-                errors += "ERROR, invalid path format";
+                errors += "ERROR, invalid path format\n\n";
                 passing = false;
             }
 
             if (!Directory.Exists(frompath))
             {
-                errors += "ERROR, source folder doesn't exist";
+                errors += "ERROR, source folder doesn't exist\n\n";
                 passing = false;
             }
             if (Directory.Exists(topath))
             {
-                errors += "ERROR, destination folder already contains a folder with the same name";
+                errors += "ERROR, destination folder already contains a folder with the same name\n\n";
                 passing = false;
             }
             if (!Directory.Exists(Directory.GetParent(topath).FullName))
             {
-                errors += "destination folder doesn't exist";
+                errors += "destination folder doesn't exist\n\n";
                 passing = false;
             }
+            string TestFile = Path.Combine(frompath, "deleteme");
+            try
+            {
+                System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(frompath);
+                File.Create(TestFile);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                errors += "You do not have the required privileges to move the directory.\nTry running as administrator\n\n";
+                passing = false;
+            }
+            finally
+            {
+                if(File.Exists(TestFile))
+                    File.Delete(TestFile);
+            }
+
 
             if (!passing)
                 MessageBox.Show(errors);
