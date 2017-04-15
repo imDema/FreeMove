@@ -175,6 +175,7 @@ namespace FreeMove
                 passing = false;
             }
             string TestFile = Path.Combine(frompath, "deleteme");
+            while (File.Exists(TestFile)) TestFile += new Random().Next(0, 10).ToString();
             try
             {
                 System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(frompath);
