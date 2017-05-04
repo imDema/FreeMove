@@ -51,7 +51,7 @@ namespace FreeMove
                 }
                 else
                 {
-                    success = await StartMoving(source, destination, false);
+                    success = StartMoving(source, destination, false);
                 }
 
                 //LINKING
@@ -73,31 +73,21 @@ namespace FreeMove
                         var result = MessageBox.Show("ERROR creating symbolic link.\nThe folder is in the new position but the link could not be created.\nTry running as administrator\n\nDo you want to move the files back?", "ERROR, could not create a directory junction", MessageBoxButtons.YesNo);
                         if(result == DialogResult.Yes)
                         {
-                            await StartMoving(destination,source,true,"Wait, moving files back");
+                            StartMoving(destination,source,true,"Wait, moving files back");
                         }
                     }
                 }
             }
         }
 
-        private Task<bool> StartMoving(string source, string destination, bool DontReplace)
+        private bool StartMoving(string source, string destination, bool doNotReplace, string ProgressMessage)
         {
-            return StartMoving(source, destination, DontReplace, "Moving Files...");
+            MoveDialog MvDiag = new MoveDialog(source,destination,doNotReplace,ProgressMessage);
+            MvDiag.ShowDialog();
+            return MvDiag.Result;
         }
+        private bool StartMoving(string source, string destination, bool doNotReplace) { return StartMoving(source, destination, doNotReplace, "PLACEHOLDER"); }
 
-        private async Task<bool> StartMoving(string source, string destination, bool DontReplace, string ProgressMessage)
-        {
-            ProgressDialog pdiag = new ProgressDialog(this);
-            pdiag.Show();
-            this.Enabled = false;
-
-            bool res = await Task.Run(() => MoveFolder(source, destination, DontReplace));
-
-            this.Enabled = true;
-            pdiag.Close();
-            pdiag.Dispose();
-            return res;
-        }
 
         #region SymLink
         [DllImport("kernel32.dll")]
@@ -117,23 +107,9 @@ namespace FreeMove
         #endregion
 
         #region PrivateMethods
-        private bool MoveFolder(string source, string destination, bool DontReplace)
-        {
-            CopyFolder(source, destination, DontReplace);
-            try
-            {
-                Directory.Delete(source, true);
-                return true;
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                MoveFolder(destination, source, true);
-                Unauthorized(ex);
-                return false;
-            }
-        }
+        
 
-        private void Unauthorized(Exception ex)
+        public static void Unauthorized(Exception ex)
         {
             MessageBox.Show("ERROR: a file could not be moved, it may be in use or you may not have the required permissions.\n\nTry running this program as administrator and/or close any program that is using the file specified in the details\n\nDETAILS: " + ex.Message, "Unauthorized Access");
         }
@@ -199,27 +175,6 @@ namespace FreeMove
             return passing;
         }
 
-        private void CopyFolder(string sourceFolder, string destFolder, bool DontReplace)
-        {
-            if (!Directory.Exists(destFolder))
-                Directory.CreateDirectory(destFolder);
-            string[] files = Directory.GetFiles(sourceFolder);
-            foreach (string file in files)
-            {
-                string name = Path.GetFileName(file);
-                string dest = Path.Combine(destFolder, name);
-                if(!(DontReplace && File.Exists(dest)))
-                    File.Copy(file, dest);
-            }
-            string[] folders = Directory.GetDirectories(sourceFolder);
-            foreach (string folder in folders)
-            {
-                string name = Path.GetFileName(folder);
-                string dest = Path.Combine(destFolder, name);
-                CopyFolder(folder, dest, DontReplace);
-            }
-        }
-
         private void Reset()
         {
             textBox_From.Text = "";
@@ -227,30 +182,15 @@ namespace FreeMove
             textBox_From.Focus();
         }
 
-        private void WriteLog(string log)
-        {
-            File.AppendAllText(GetTempFolder() + @"\log.log", log);
-        }
-
-        private string ReadLog()
-        {
-            return File.ReadAllText(GetTempFolder() + @"\log.log");
-        }
-
-        private string GetTempFolder()
-        {
-            string dir = Environment.GetEnvironmentVariable("TEMP") + @"\FreeMove";
-            Directory.CreateDirectory(dir);
-            return dir;
-        }
-
         private void SetToolTips()
         {
-            ToolTip Tip = new ToolTip();
-            Tip.ShowAlways = true;
-            Tip.AutoPopDelay = 5000;
-            Tip.InitialDelay = 600;
-            Tip.ReshowDelay = 500;
+            ToolTip Tip = new ToolTip()
+            {
+                ShowAlways = true,
+                AutoPopDelay = 5000,
+                InitialDelay = 600,
+                ReshowDelay = 500
+            };
             Tip.SetToolTip(this.textBox_From, "Select the folder you want to move");
             Tip.SetToolTip(this.textBox_To, "Select where you want to move the folder");
             Tip.SetToolTip(this.checkBox1, "Select whether you want to hide the shortcut which is created in the old location or not");

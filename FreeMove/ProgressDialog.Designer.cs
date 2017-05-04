@@ -1,6 +1,6 @@
 ﻿namespace FreeMove
 {
-    partial class ProgressDialog
+    partial class MoveDialog
     {
         /// <summary>
         /// Required designer variable.
