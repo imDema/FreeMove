@@ -11,3 +11,6 @@ Just run the executable and use the GUI
 If you want to move from or to a directory, like C:\Program Files, which requires administrative privileges, run the program as an administrator or it won't work!
 ## Screenshots
 ![Screenshot](http://i.imgur.com/svWyDZ6.png)
+
+## Uninstalling moved programs
+To uninstall you a program you should proceed as you would do normally without deleting the junction. This way the uninstaller will delete all the files It needs to (even if they are in the new location) and leave the junction file and an empty directory where you moved the program which you can choose to delete manually or not (they take up almost no space)
