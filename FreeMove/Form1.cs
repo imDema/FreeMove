@@ -73,7 +73,7 @@ namespace FreeMove
                         var result = MessageBox.Show("ERROR creating symbolic link.\nThe folder is in the new position but the link could not be created.\nTry running as administrator\n\nDo you want to move the files back?", "ERROR, could not create a directory junction", MessageBoxButtons.YesNo);
                         if(result == DialogResult.Yes)
                         {
-                            StartMoving(destination,source,true,"Wait, moving files back");
+                            StartMoving(destination,source,true,"Wait, moving files back...");
                         }
                     }
                 }
@@ -82,12 +82,18 @@ namespace FreeMove
 
         private bool StartMoving(string source, string destination, bool doNotReplace, string ProgressMessage)
         {
-            MoveDialog MvDiag = new MoveDialog(source,destination,doNotReplace,ProgressMessage);
-            MvDiag.ShowDialog();
-            return MvDiag.Result;
+            return _StartMoving( new MoveDialog(source, destination, doNotReplace, ProgressMessage) );
         }
-        private bool StartMoving(string source, string destination, bool doNotReplace) { return StartMoving(source, destination, doNotReplace, "PLACEHOLDER"); }
+        private bool StartMoving(string source, string destination, bool doNotReplace)
+        {
+            return _StartMoving(new MoveDialog(source, destination, doNotReplace));
+        }
 
+        private bool _StartMoving(MoveDialog mvDiag)
+        {
+            mvDiag.ShowDialog();
+            return mvDiag.Result;
+        }
 
         #region SymLink
         [DllImport("kernel32.dll")]
