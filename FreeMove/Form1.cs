@@ -26,7 +26,7 @@ namespace FreeMove
             SetToolTips();
         }
 
-        private async void Button_Move_Click(object sender, EventArgs e)
+        private void Button_Move_Click(object sender, EventArgs e)
         {
             string source, destination;
             source = textBox_From.Text;
@@ -156,10 +156,11 @@ namespace FreeMove
                 errors += "destination folder doesn't exist\n\n";
                 passing = false;
             }
-            string TestFile = Path.Combine(frompath, "deleteme");
+            string TestFile = Path.Combine(Path.GetDirectoryName(frompath), "deleteme");
             while (File.Exists(TestFile)) TestFile += new Random().Next(0, 10).ToString();
             try
             {
+                //Try creating a file to check permissions
                 System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(frompath);
                 File.Create(TestFile).Close();
             }
@@ -174,6 +175,14 @@ namespace FreeMove
                     File.Delete(TestFile);
             }
 
+            //Try to create a symbolic link to check permissions
+            if(!CreateSymbolicLink(TestFile, Path.GetDirectoryName(topath), SymbolicLink.Directory))
+            {
+                errors += "Could not create a symbolic link.\nTry running as administrator\n\n";
+                passing = false;
+            }
+            if (Directory.Exists(TestFile))
+                Directory.Delete(TestFile);
 
             if (!passing)
                 MessageBox.Show(errors);
