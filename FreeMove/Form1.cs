@@ -184,6 +184,21 @@ namespace FreeMove
             if (Directory.Exists(TestFile))
                 Directory.Delete(TestFile);
 
+            //Check if there's enough free space on disk
+            long Size = 0;
+            DirectoryInfo Dest = new DirectoryInfo(frompath);
+            foreach (FileInfo file in Dest.GetFiles("*", SearchOption.AllDirectories))
+            {
+                Size += file.Length;
+            }
+            DriveInfo DestDrive = new DriveInfo(Path.GetPathRoot(topath));
+            if(DestDrive.AvailableFreeSpace < Size)
+            {
+                errors += $"There is not enough free space on the {DestDrive.Name} disk. {Size / 1000000}MB required, {DestDrive.AvailableFreeSpace / 1000000} available.\n\n";
+                passing = false;
+            }
+
+
             if (!passing)
                 MessageBox.Show(errors);
 
