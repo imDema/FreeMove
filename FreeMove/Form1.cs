@@ -198,8 +198,8 @@ namespace FreeMove
         private void Button_Move_Click(object sender, EventArgs e)
         {
             string source, destination;
-            source = textBox_From.Text;
-            destination = textBox_To.Text + "\\" + Path.GetFileName(source);
+            source = textBox_From.Text.TrimEnd('\\');
+            destination = Path.Combine(textBox_To.Text.TrimEnd('\\'), Path.GetFileName(source));
 
             if (CheckFolders(source, destination))
             {
