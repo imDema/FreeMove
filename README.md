@@ -22,3 +22,6 @@ However moving directories contained in the previously mentioned directories sho
 
 ## Uninstalling moved programs
 To uninstall you a program you should proceed as you would do normally without deleting the junction. This way the uninstaller will delete all the files It needs to (even if they are in the new location) and leave the junction file and an empty directory where you moved the program which you can choose to delete manually or not (they take up almost no space)
+
+## Moving back a program
+Delete the junction (this won't delete the content) in the old position and move the directory back to its original position
