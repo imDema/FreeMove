@@ -8,7 +8,15 @@ If a program installs on C:\ by default or you want to move the installation fol
 ## Usage
 Just run the executable and use the GUI
 
-If you want to move from or to a directory, like C:\Program Files, which requires administrative privileges, run the program as an administrator or it won't work!
+If you want to move from or to a directory, like those contained in C:\Program Files, which requires administrative privileges, run the program as an administrator or it won't work!
+
+## Recommendations
+You should not move important system directories as they can break core functionalities like Windows Update and Windows Store Apps.
+
+`C:\Users` - `C:\Documents and Settings` - `C:\Program Files` - `C:\Program Files (x86)` should not be moved. If you wish to do It anyway do it at your own risk. To move the directory back refer to the last part of the readme.
+
+However moving directories contained in the previously mentioned directories should not cause any problem. So you are free to move `C:\Program Files\HugeProgramIDontWantOnMySSD` without any problem.
+
 ## Screenshots
 ![Screenshot](http://i.imgur.com/svWyDZ6.png)
 
