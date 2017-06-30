@@ -6,7 +6,9 @@ If a program installs on C:\ by default or you want to move the installation fol
 1. The files are moved to the new location
 2. A directory junction is created from the old location to the new one. This way trying to access a file from its old location will simply redirect to the new one
 ## Usage
-Just run the executable and use the GUI
+[Download the latest release](https://github.com/imDema/FreeMove/releases/latest)
+
+Run the executable and use the GUI
 
 If you want to move from or to a directory, like those contained in C:\Program Files, which requires administrative privileges, run the program as an administrator or it won't work!
 
