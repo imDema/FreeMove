@@ -276,6 +276,11 @@ namespace FreeMove
         {
             Process.Start("https://github.com/imDema/FreeMove");
         }
+
+        private void ReportAnIssueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/imDema/FreeMove/issues/new");
+        }
         #endregion
     }
 }

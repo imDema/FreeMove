@@ -42,6 +42,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gitHubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reportAnIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -145,7 +146,8 @@
             // infoToolStripMenuItem
             // 
             this.infoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.gitHubToolStripMenuItem});
+            this.gitHubToolStripMenuItem,
+            this.reportAnIssueToolStripMenuItem});
             this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
             this.infoToolStripMenuItem.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.infoToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
@@ -154,9 +156,16 @@
             // gitHubToolStripMenuItem
             // 
             this.gitHubToolStripMenuItem.Name = "gitHubToolStripMenuItem";
-            this.gitHubToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.gitHubToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.gitHubToolStripMenuItem.Text = "GitHub";
             this.gitHubToolStripMenuItem.Click += new System.EventHandler(this.GitHubToolStripMenuItem_Click);
+            // 
+            // reportAnIssueToolStripMenuItem
+            // 
+            this.reportAnIssueToolStripMenuItem.Name = "reportAnIssueToolStripMenuItem";
+            this.reportAnIssueToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.reportAnIssueToolStripMenuItem.Text = "Report an Issue";
+            this.reportAnIssueToolStripMenuItem.Click += new System.EventHandler(this.ReportAnIssueToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -202,6 +211,7 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem infoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gitHubToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reportAnIssueToolStripMenuItem;
     }
 }
 
