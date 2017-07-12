@@ -59,5 +59,14 @@ namespace FreeMove.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a 1.1.3.
+        /// </summary>
+        internal static string VersionNumber {
+            get {
+                return ResourceManager.GetString("VersionNumber", resourceCulture);
+            }
+        }
     }
 }

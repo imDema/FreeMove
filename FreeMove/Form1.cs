@@ -281,6 +281,11 @@ namespace FreeMove
         {
             Process.Start("https://github.com/imDema/FreeMove/issues/new");
         }
+
+        private async void CheckForUpdateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           new Updater().CheckForUpdate();
+        }
         #endregion
     }
 }
