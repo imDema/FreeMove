@@ -284,7 +284,7 @@ namespace FreeMove
 
         private async void CheckForUpdateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           new Updater().CheckForUpdate();
+           new Updater().Show();
         }
         #endregion
     }

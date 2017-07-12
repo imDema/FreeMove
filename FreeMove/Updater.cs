@@ -17,14 +17,30 @@ namespace FreeMove
 {
     public partial class Updater : Form
     {
+        string CurrentVersion = "", NewVersion = "";
+
         public Updater()
         {
             InitializeComponent();
         }
+
+        private async void Updater_Load(object sender, EventArgs e)
+        {
+            if(await CheckForUpdate())
+            {
+                progressBar1.Dispose();
+                label1.Font = new Font("Lucida Console", label1.Font.Size);
+                label1.Text = String.Format($"Current Version: {CurrentVersion}\nLatest Version:  {NewVersion}\n\nOpen the download page?");
+                button_Cancel.Enabled = true;
+                button_Cancel.Click += delegate { Dispose(); };
+
+                button_Ok.Enabled = true;
+                button_Ok.Click += delegate { System.Diagnostics.Process.Start("https://github.com/ImDema/FreeMove/releases/latest"); Dispose(); };
+            }
+        }
+
         public async Task<bool> CheckForUpdate()
         {
-            string RetrievedVersion = "";
-
             HttpWebRequest Req = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/ImDema/FreeMove/releases/latest");
             Req.UserAgent = "ImDema/FreeMove Updater";
             HttpWebResponse Response = (HttpWebResponse) await Req.GetResponseAsync();
@@ -35,14 +51,24 @@ namespace FreeMove
                 if(Reader.TokenType == JsonToken.PropertyName && (string)Reader.Value == "tag_name")
                 {
                     Reader.Read();
-                    RetrievedVersion = Reader.Value as string + ".0";
+                    NewVersion = Reader.Value as string + ".0";
                     break;
                 }
             }
-            if (RetrievedVersion == "") throw new Exception("Could not retrieve the version information from the GitHub server");
+            if (NewVersion == "") throw new Exception("Could not retrieve the version information from the GitHub server");
             Assembly assembly = Assembly.GetExecutingAssembly();
-            string CurrentVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
-            return CurrentVersion != RetrievedVersion;
+            CurrentVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
+            return CurrentVersion != NewVersion;
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
