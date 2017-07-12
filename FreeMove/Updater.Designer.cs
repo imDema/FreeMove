@@ -84,6 +84,7 @@
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Updater";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FreeMove - Update";
             this.Load += new System.EventHandler(this.Updater_Load);
             this.ResumeLayout(false);
