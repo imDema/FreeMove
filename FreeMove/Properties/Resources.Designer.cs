@@ -61,11 +61,11 @@ namespace FreeMove.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a 1.1.3.
+        ///   Cerca una stringa localizzata simile a Could not retrieve the version information from the GitHub server.
         /// </summary>
-        internal static string VersionNumber {
+        internal static string GitHubErrorMessage {
             get {
-                return ResourceManager.GetString("VersionNumber", resourceCulture);
+                return ResourceManager.GetString("GitHubErrorMessage", resourceCulture);
             }
         }
     }

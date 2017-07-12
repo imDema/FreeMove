@@ -26,16 +26,35 @@ namespace FreeMove
 
         private async void Updater_Load(object sender, EventArgs e)
         {
-            if(await CheckForUpdate())
+            try
             {
-                progressBar1.Dispose();
-                label1.Font = new Font("Lucida Console", label1.Font.Size);
-                label1.Text = String.Format($"Current Version: {CurrentVersion}\nLatest Version:  {NewVersion}\n\nOpen the download page?");
-                button_Cancel.Enabled = true;
-                button_Cancel.Click += delegate { Dispose(); };
+                if (await CheckForUpdate())
+                {
+                    progressBar1.Dispose();
+                    label1.Font = new Font("Lucida Console", label1.Font.Size);
+                    label1.Text = String.Format($"Current Version: {CurrentVersion}\nLatest Version:  {NewVersion}\n\nOpen the download page?");
+                    button_Cancel.Enabled = true;
+                    button_Cancel.Click += delegate { Dispose(); };
 
-                button_Ok.Enabled = true;
-                button_Ok.Click += delegate { System.Diagnostics.Process.Start("https://github.com/ImDema/FreeMove/releases/latest"); Dispose(); };
+                    button_Ok.Enabled = true;
+                    button_Ok.Click += delegate { System.Diagnostics.Process.Start("https://github.com/ImDema/FreeMove/releases/latest"); Dispose(); };
+                }
+                else
+                {
+                    label1.Text = "There are no updates available";
+                    button_Ok.Enabled = true;
+                    button_Ok.Click += delegate { Dispose(); };
+                }
+            }
+            catch(Exception ex)
+            {
+                if (ex.Message == Properties.Resources.GitHubErrorMessage)
+                {
+                    label1.Text = Properties.Resources.GitHubErrorMessage;
+                    button_Ok.Enabled = true;
+                    button_Ok.Click += delegate { Dispose(); };
+                }
+                else throw ex;
             }
         }
 
@@ -55,7 +74,7 @@ namespace FreeMove
                     break;
                 }
             }
-            if (NewVersion == "") throw new Exception("Could not retrieve the version information from the GitHub server");
+            if (NewVersion == "") throw new Exception(Properties.Resources.GitHubErrorMessage);
             Assembly assembly = Assembly.GetExecutingAssembly();
             CurrentVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
             return CurrentVersion != NewVersion;
