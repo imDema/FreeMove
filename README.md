@@ -20,7 +20,7 @@ You should not move important system directories as they can break core function
 However moving directories contained in the previously mentioned directories should not cause any problem. So you are free to move `C:\Program Files\HugeProgramIDontWantOnMySSD` without any problem.
 
 ## Screenshots
-![Screenshot](http://i.imgur.com/svWyDZ6.png)
+![Screenshot](http://i.imgur.com/fW6ZEg3.png)
 
 ## Uninstalling moved programs
 To uninstall you a program you should proceed as you would do normally without deleting the junction. This way the uninstaller will delete all the files It needs to (even if they are in the new location) and leave the junction file and an empty directory where you moved the program which you can choose to delete manually or not (they take up almost no space)
