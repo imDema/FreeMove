@@ -209,6 +209,8 @@ namespace FreeMove
                 {
                     try
                     {
+                        button_Move.Text = "Moving...";
+                        Enabled = false;
                         Directory.Move(source, destination);
                         success = true;
                     }
@@ -216,6 +218,11 @@ namespace FreeMove
                     {
                         Unauthorized(ex);
                         success = false;
+                    }
+                    finally
+                    {
+                        button_Move.Text = "Move";
+                        Enabled = true;
                     }
                 }
                 else
