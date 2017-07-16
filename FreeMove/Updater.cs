@@ -43,6 +43,7 @@ namespace FreeMove
                 else
                 {
                     label1.Text = "There are no updates available";
+                    progressBar1.Dispose();
                     button_Ok.Enabled = true;
                     button_Ok.Click += delegate { Dispose(); };
                 }
