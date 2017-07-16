@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace FreeMove
 {
@@ -48,9 +49,10 @@ namespace FreeMove
             }
             catch(Exception ex)
             {
-                if (ex.Message == Properties.Resources.GitHubErrorMessage)
+                if (ex.Message == Properties.Resources.GitHubErrorMessage || ex is WebException)
                 {
                     label1.Text = Properties.Resources.GitHubErrorMessage;
+                    progressBar1.Dispose();
                     button_Ok.Enabled = true;
                     button_Ok.Click += delegate { Dispose(); };
                 }
@@ -64,30 +66,15 @@ namespace FreeMove
             Req.UserAgent = "ImDema/FreeMove Updater";
             HttpWebResponse Response = (HttpWebResponse) await Req.GetResponseAsync();
             Stream ResponseStream = Response.GetResponseStream();
-            JsonTextReader Reader = new JsonTextReader(new StreamReader(ResponseStream));
-            while(await Reader.ReadAsync())
-            {
-                if(Reader.TokenType == JsonToken.PropertyName && (string)Reader.Value == "tag_name")
-                {
-                    Reader.Read();
-                    NewVersion = Reader.Value as string + ".0";
-                    break;
-                }
-            }
+
+            TextReader Reader = new StreamReader(ResponseStream);
+            const string pattern = "\"tag_name\":\"([0-9.]{5,9})\"";
+            NewVersion = Regex.Match(Reader.ReadToEnd(), pattern,RegexOptions.Multiline).Groups[1].Value;
+
             if (NewVersion == "") throw new Exception(Properties.Resources.GitHubErrorMessage);
             Assembly assembly = Assembly.GetExecutingAssembly();
             CurrentVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
             return CurrentVersion != NewVersion;
-        }
-
-        private void Button2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Button1_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

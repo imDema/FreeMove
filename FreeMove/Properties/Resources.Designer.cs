@@ -61,7 +61,8 @@ namespace FreeMove.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a Could not retrieve the version information from the GitHub server.
+        ///   Cerca una stringa localizzata simile a Could not retrieve the version information
+        ///from the GitHub server.
         /// </summary>
         internal static string GitHubErrorMessage {
             get {

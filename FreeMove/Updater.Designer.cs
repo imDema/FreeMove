@@ -52,7 +52,6 @@
             this.button_Ok.TabIndex = 1;
             this.button_Ok.Text = "Ok";
             this.button_Ok.UseVisualStyleBackColor = true;
-            this.button_Ok.Click += new System.EventHandler(this.Button1_Click);
             // 
             // button_Cancel
             // 
@@ -63,7 +62,6 @@
             this.button_Cancel.TabIndex = 1;
             this.button_Cancel.Text = "Cancel";
             this.button_Cancel.UseVisualStyleBackColor = true;
-            this.button_Cancel.Click += new System.EventHandler(this.Button2_Click);
             // 
             // progressBar1
             // 
