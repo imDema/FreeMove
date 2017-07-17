@@ -22,9 +22,15 @@ namespace FreeMove
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
             SetToolTips();
+            if (Settings.AutoUpdate())
+            {
+                checkOnProgramStartToolStripMenuItem.Checked = true;
+                Updater updater = await Task<bool>.Run(() => Updater.SilentCheck());
+                if (updater != null) updater.ShowDialog();
+            }
         }
 
         #endregion
@@ -296,7 +302,8 @@ namespace FreeMove
 
         private void CheckOnProgramStartToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //TBD
+            Settings.ToggleAutoUpdate();
+            checkOnProgramStartToolStripMenuItem.Checked = Settings.AutoUpdate();
         }
         #endregion
     }

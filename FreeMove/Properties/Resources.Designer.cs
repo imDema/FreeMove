@@ -69,5 +69,14 @@ namespace FreeMove.Properties {
                 return ResourceManager.GetString("GitHubErrorMessage", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a ImDema-FreeMove-Updater.
+        /// </summary>
+        internal static string UserAgent {
+            get {
+                return ResourceManager.GetString("UserAgent", resourceCulture);
+            }
+        }
     }
 }

@@ -45,8 +45,8 @@
             this.checkNowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkOnProgramStartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.gitHubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportAnIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gitHubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -171,16 +171,15 @@
             // checkNowToolStripMenuItem
             // 
             this.checkNowToolStripMenuItem.Name = "checkNowToolStripMenuItem";
-            this.checkNowToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.checkNowToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
             this.checkNowToolStripMenuItem.Text = "Check now";
             this.checkNowToolStripMenuItem.Click += new System.EventHandler(this.CheckNowToolStripMenuItem_Click);
             // 
             // checkOnProgramStartToolStripMenuItem
             // 
-            this.checkOnProgramStartToolStripMenuItem.Enabled = false;
             this.checkOnProgramStartToolStripMenuItem.Name = "checkOnProgramStartToolStripMenuItem";
-            this.checkOnProgramStartToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.checkOnProgramStartToolStripMenuItem.Text = "Check on program start [Soon]";
+            this.checkOnProgramStartToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.checkOnProgramStartToolStripMenuItem.Text = "Check on program start";
             this.checkOnProgramStartToolStripMenuItem.Click += new System.EventHandler(this.CheckOnProgramStartToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
@@ -188,19 +187,19 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(162, 6);
             // 
-            // gitHubToolStripMenuItem
-            // 
-            this.gitHubToolStripMenuItem.Name = "gitHubToolStripMenuItem";
-            this.gitHubToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-            this.gitHubToolStripMenuItem.Text = "GitHub";
-            this.gitHubToolStripMenuItem.Click += new System.EventHandler(this.GitHubToolStripMenuItem_Click);
-            // 
             // reportAnIssueToolStripMenuItem
             // 
             this.reportAnIssueToolStripMenuItem.Name = "reportAnIssueToolStripMenuItem";
             this.reportAnIssueToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.reportAnIssueToolStripMenuItem.Text = "Report an Issue";
             this.reportAnIssueToolStripMenuItem.Click += new System.EventHandler(this.ReportAnIssueToolStripMenuItem_Click);
+            // 
+            // gitHubToolStripMenuItem
+            // 
+            this.gitHubToolStripMenuItem.Name = "gitHubToolStripMenuItem";
+            this.gitHubToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.gitHubToolStripMenuItem.Text = "GitHub";
+            this.gitHubToolStripMenuItem.Click += new System.EventHandler(this.GitHubToolStripMenuItem_Click);
             // 
             // Form1
             // 

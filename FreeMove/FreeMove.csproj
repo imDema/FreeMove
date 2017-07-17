@@ -92,6 +92,7 @@
       <DependentUpon>ProgressDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Updater.cs">
       <SubType>Form</SubType>
     </Compile>

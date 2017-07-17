@@ -121,4 +121,7 @@
     <value>Could not retrieve the version information
 from the GitHub server</value>
   </data>
+  <data name="UserAgent" xml:space="preserve">
+    <value>ImDema-FreeMove-Updater</value>
+  </data>
 </root>

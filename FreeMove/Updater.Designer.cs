@@ -84,7 +84,7 @@
             this.Name = "Updater";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FreeMove - Update";
-            this.Load += new System.EventHandler(this.Updater_Load);
+            this.Shown += new System.EventHandler(this.Updater_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

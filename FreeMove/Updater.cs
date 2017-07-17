@@ -19,26 +19,33 @@ namespace FreeMove
     public partial class Updater : Form
     {
         string CurrentVersion = "", NewVersion = "";
+        bool Silent = false;
 
+        public Updater(bool Silent)
+        {
+            this.Silent = Silent;
+            InitializeComponent();
+        }
         public Updater()
         {
             InitializeComponent();
         }
 
-        private async void Updater_Load(object sender, EventArgs e)
+        private void Updater_Shown(object sender, EventArgs e)
+        {
+            if (Silent)
+                ShowUpdate();
+            else
+                Check();
+        }
+
+        private async void Check()
         {
             try
             {
-                if (await CheckForUpdate())
+                if (await CheckGitHub())
                 {
-                    progressBar1.Dispose();
-                    label1.Font = new Font("Lucida Console", label1.Font.Size);
-                    label1.Text = String.Format($"Current Version: {CurrentVersion}\nLatest Version:  {NewVersion}\n\nOpen the download page?");
-                    button_Cancel.Enabled = true;
-                    button_Cancel.Click += delegate { Dispose(); };
-
-                    button_Ok.Enabled = true;
-                    button_Ok.Click += delegate { System.Diagnostics.Process.Start("https://github.com/ImDema/FreeMove/releases/latest"); Dispose(); };
+                    ShowUpdate();
                 }
                 else
                 {
@@ -48,7 +55,7 @@ namespace FreeMove
                     button_Ok.Click += delegate { Dispose(); };
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 if (ex.Message == Properties.Resources.GitHubErrorMessage || ex is WebException)
                 {
@@ -61,12 +68,21 @@ namespace FreeMove
             }
         }
 
-        public async Task<bool> CheckForUpdate()
+        private void ShowUpdate()
         {
-            HttpWebRequest Req = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/ImDema/FreeMove/releases/latest");
-            Req.UserAgent = "ImDema/FreeMove Updater";
-            HttpWebResponse Response = (HttpWebResponse) await Req.GetResponseAsync();
-            Stream ResponseStream = Response.GetResponseStream();
+            progressBar1.Dispose();
+            label1.Font = new Font("Lucida Console", label1.Font.Size);
+            label1.Text = String.Format($"New version available\n\nCurrent Version: {CurrentVersion}\nLatest Version:  {NewVersion}\n\nOpen the download page?");
+            button_Cancel.Enabled = true;
+            button_Cancel.Click += delegate { Dispose(); };
+
+            button_Ok.Enabled = true;
+            button_Ok.Click += delegate { System.Diagnostics.Process.Start("https://github.com/ImDema/FreeMove/releases/latest"); Dispose(); };
+        }
+
+        public async Task<bool> CheckGitHub()
+        {
+            Stream ResponseStream = Silent ? GetGitHubStream() : await GetGitHubStreamAsync();
 
             TextReader Reader = new StreamReader(ResponseStream);
             const string pattern = "\"tag_name\":\"([0-9.]{5,9})\"";
@@ -76,6 +92,39 @@ namespace FreeMove
             Assembly assembly = Assembly.GetExecutingAssembly();
             CurrentVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
             return CurrentVersion != NewVersion;
+        }
+
+        private async Task<Stream> GetGitHubStreamAsync()
+        {
+            HttpWebRequest Req = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/ImDema/FreeMove/releases/latest");
+            Req.UserAgent = Properties.Resources.UserAgent;
+            HttpWebResponse Response = (HttpWebResponse)await Req.GetResponseAsync();
+            return Response.GetResponseStream();
+        }
+        private Stream GetGitHubStream()
+        {
+            HttpWebRequest Req = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/ImDema/FreeMove/releases/latest");
+            Req.UserAgent = Properties.Resources.UserAgent;
+            HttpWebResponse Response = (HttpWebResponse) Req.GetResponse();
+            return Response.GetResponseStream();
+        }
+
+
+        public static async Task<Updater> SilentCheck()
+        {
+            Updater updater = new Updater(true);
+            try
+            {
+                if (await updater.CheckGitHub())
+                {
+                    return updater;
+                }
+                else return null;
+            }
+            catch (WebException)
+            {
+                return null;
+            }
         }
     }
 }
