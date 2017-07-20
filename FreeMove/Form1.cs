@@ -19,16 +19,22 @@ namespace FreeMove
         #region Initialization
         public Form1()
         {
+            //Initialize UI elements
             InitializeComponent();
         }
 
         private async void Form1_Load(object sender, EventArgs e)
         {
             SetToolTips();
+
+            //Check whether the program is set to update on its start
             if (Settings.AutoUpdate())
             {
+                //Update the menu item accordingly
                 checkOnProgramStartToolStripMenuItem.Checked = true;
+                //Start a background update task
                 Updater updater = await Task<bool>.Run(() => Updater.SilentCheck());
+                //If there is an update show the update dialog
                 if (updater != null) updater.ShowDialog();
             }
         }
@@ -36,6 +42,7 @@ namespace FreeMove
         #endregion
 
         #region SymLink
+        //External dll functions
         [DllImport("kernel32.dll")]
         static extern bool CreateSymbolicLink(
         string lpSymlinkFileName, string lpTargetFileName, SymbolicLink dwFlags);
@@ -55,8 +62,9 @@ namespace FreeMove
         #region Private Methods
         private bool CheckFolders(string source, string destination)
         {
-            bool passing = true;
-            string errors = "";
+            bool passing = true; //Set to false if there are one or more errors
+            string errors = ""; //String to show if there is any error
+
             //Check for correct file path format
             try
             {
@@ -173,6 +181,7 @@ namespace FreeMove
             return mvDiag.Result;
         }
 
+        //Configure tooltips
         private void SetToolTips()
         {
             ToolTip Tip = new ToolTip()
@@ -203,14 +212,18 @@ namespace FreeMove
         #region Event Handlers
         private void Button_Move_Click(object sender, EventArgs e)
         {
+            //Get the original and the new path from the textboxes
             string source, destination;
             source = textBox_From.Text.TrimEnd('\\');
             destination = Path.Combine(textBox_To.Text.TrimEnd('\\'), Path.GetFileName(source));
 
+            //Check for errors before copying
             if (CheckFolders(source, destination))
             {
                 bool success;
-                //MOVING
+
+                //Move files
+                //If the paths are on the same drive use the .NET Move() method
                 if (Directory.GetDirectoryRoot(source) == Directory.GetDirectoryRoot(destination))
                 {
                     try
@@ -231,16 +244,18 @@ namespace FreeMove
                         Enabled = true;
                     }
                 }
+                //If they are on different drives move them manually using filestrams
                 else
                 {
                     success = StartMoving(source, destination, false);
                 }
 
-                //LINKING
+                //Link the old paths to the new location
                 if (success)
                 {
                     if (MakeLink(destination, source))
                     {
+                        //If told to make the link hidden
                         if (checkBox1.Checked)
                         {
                             DirectoryInfo olddir = new DirectoryInfo(source);
@@ -252,6 +267,7 @@ namespace FreeMove
                     }
                     else
                     {
+                        //Handle linking error
                         var result = MessageBox.Show("ERROR creating symbolic link.\nThe folder is in the new position but the link could not be created.\nTry running as administrator\n\nDo you want to move the files back?", "ERROR, could not create a directory junction", MessageBoxButtons.YesNo);
                         if (result == DialogResult.Yes)
                         {
@@ -262,6 +278,7 @@ namespace FreeMove
             }
         }
 
+        //Show a directory picker for the source directory
         private void Button_BrowseFrom_Click(object sender, EventArgs e)
         {
             DialogResult result = folderBrowserDialog1.ShowDialog();
@@ -271,6 +288,7 @@ namespace FreeMove
             }
         }
 
+        //Show a directory picker for the destination directory
         private void Button_BrowseTo_Click(object sender, EventArgs e)
         {
             DialogResult result = folderBrowserDialog1.ShowDialog();
@@ -280,26 +298,31 @@ namespace FreeMove
             }
         }
 
+        //Close the form
         private void Button_Close_Click(object sender, EventArgs e)
         {
             Close();
         }
 
+        //Open GitHub page
         private void GitHubToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/imDema/FreeMove");
         }
 
+        //Open the report an issue page on GitHub
         private void ReportAnIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/imDema/FreeMove/issues/new");
         }
         
+        //Show an update dialog
         private void CheckNowToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new Updater().ShowDialog();
         }
 
+        //Set to check updates on program start
         private void CheckOnProgramStartToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Settings.ToggleAutoUpdate();
