@@ -329,5 +329,10 @@ namespace FreeMove
             checkOnProgramStartToolStripMenuItem.Checked = Settings.AutoUpdate();
         }
         #endregion
+
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("ImDema/FreeMove\n\nFreeMove is licensed under the GNU General Public License v3.0\nFor more informations https://github.com/imDema/FreeMove/blob/master/LICENSE.txt \n\nhttps://github.com/imDema", "About FreeMove");
+        }
     }
 }
