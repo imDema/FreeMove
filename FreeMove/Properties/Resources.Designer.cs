@@ -61,7 +61,37 @@ namespace FreeMove.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error: {0}\n\nHow do you want to proceed?\n\&quot;Abort\&quot; to revert changes\n\&quot;Ignore\&quot; to stop the program.
+        ///   Looks up a localized string similar to ERROR creating symbolic link.
+        ///The folder is in the new position but the link could not be created.
+        ///Try running as administrator
+        ///
+        ///Do you want to move the files back?.
+        /// </summary>
+        internal static string ErrorUnauthorizedLink {
+            get {
+                return ResourceManager.GetString("ErrorUnauthorizedLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The error was caused by a file which couldn&apos;t be moved, it may be in use or you may not have the required permissions.
+        ///
+        ///Try running this program as administrator and/or close any program that is using the file specified in the details
+        ///
+        ///DETAILS:.
+        /// </summary>
+        internal static string ErrorUnauthorizedMoveDetails {
+            get {
+                return ResourceManager.GetString("ErrorUnauthorizedMoveDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error: {0}
+        ///
+        ///How do you want to proceed?
+        ///&quot;Abort&quot; to revert changes
+        ///&quot;Ignore&quot; to stop the program.
         /// </summary>
         internal static string ErrorUnauthorizedMoveMessage {
             get {
@@ -80,7 +110,9 @@ namespace FreeMove.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to proceed?\n\nBy ignoring you will leave all the files as they are now: part of the files will already be in the new location and missing from the old one!.
+        ///   Looks up a localized string similar to Are you sure you want to proceed?
+        ///
+        ///By ignoring you will leave all the files as they are now: part of the files will already be in the new location and missing from the old one!.
         /// </summary>
         internal static string IgnoreMessage {
             get {
@@ -89,7 +121,12 @@ namespace FreeMove.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There was an error when moving the files using FreeMove on {0} and you chose to ignore it.\nThe rest of the contents of this directory can be found at \&quot;{1}\&quot; unless they were moved.\nNext time use \&quot;Abort\&quot; in case of an error to move the files back or \&quot;Retry\&quot; to try again.\n\nIf this text file was useful or if you would have preferred it wasn&apos;t created let me know.\n.
+        ///   Looks up a localized string similar to There was an error when moving the files using FreeMove on {0} and you chose to ignore it.
+        ///The rest of the contents of this directory can be found at &quot;{1}&quot; unless they were moved.
+        ///Next time use &quot;Abort&quot; in case of an error to move the files back or &quot;Retry&quot; to try again.
+        ///
+        ///If this text file was useful or if you would have preferred it wasn&apos;t created let me know.
+        ///.
         /// </summary>
         internal static string IgnoreTextFile {
             get {

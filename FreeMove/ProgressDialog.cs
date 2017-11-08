@@ -62,7 +62,7 @@ namespace FreeMove
             catch (UnauthorizedAccessException ex)
             {
                 switch((DialogResult)Invoke(new Func<DialogResult>
-                    (() => MessageBox.Show(this, String.Format(Properties.Resources.ErrorUnauthorizedMoveMessage , ex.Message),"Error while moving contents",  MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error,MessageBoxDefaultButton.Button2,MessageBoxOptions.RightAlign))))
+                    (() => MessageBox.Show(this, String.Format(Properties.Resources.ErrorUnauthorizedMoveMessage , ex.Message),"Error while moving contents",  MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error,MessageBoxDefaultButton.Button2))))
                 {
                     default:
                     case DialogResult.Abort:

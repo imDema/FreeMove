@@ -117,18 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ErrorUnauthorizedLink" xml:space="preserve">
+    <value>ERROR creating symbolic link.
+The folder is in the new position but the link could not be created.
+Try running as administrator
+
+Do you want to move the files back?</value>
+  </data>
+  <data name="ErrorUnauthorizedMoveDetails" xml:space="preserve">
+    <value>The error was caused by a file which couldn't be moved, it may be in use or you may not have the required permissions.
+
+Try running this program as administrator and/or close any program that is using the file specified in the details
+
+DETAILS:</value>
+  </data>
   <data name="ErrorUnauthorizedMoveMessage" xml:space="preserve">
-    <value>Error: {0}\n\nHow do you want to proceed?\n\"Abort\" to revert changes\n\"Ignore\" to stop the program</value>
+    <value>Error: {0}
+
+How do you want to proceed?
+"Abort" to revert changes
+"Ignore" to stop the program</value>
   </data>
   <data name="GitHubErrorMessage" xml:space="preserve">
     <value>Could not retrieve the version information
 from the GitHub server</value>
   </data>
   <data name="IgnoreMessage" xml:space="preserve">
-    <value>Are you sure you want to proceed?\n\nBy ignoring you will leave all the files as they are now: part of the files will already be in the new location and missing from the old one!</value>
+    <value>Are you sure you want to proceed?
+
+By ignoring you will leave all the files as they are now: part of the files will already be in the new location and missing from the old one!</value>
   </data>
   <data name="IgnoreTextFile" xml:space="preserve">
-    <value>There was an error when moving the files using FreeMove on {0} and you chose to ignore it.\nThe rest of the contents of this directory can be found at \"{1}\" unless they were moved.\nNext time use \"Abort\" in case of an error to move the files back or \"Retry\" to try again.\n\nIf this text file was useful or if you would have preferred it wasn't created let me know.\n</value>
+    <value>There was an error when moving the files using FreeMove on {0} and you chose to ignore it.
+The rest of the contents of this directory can be found at "{1}" unless they were moved.
+Next time use "Abort" in case of an error to move the files back or "Retry" to try again.
+
+If this text file was useful or if you would have preferred it wasn't created let me know.
+</value>
   </data>
   <data name="UserAgent" xml:space="preserve">
     <value>ImDema-FreeMove-Updater</value>

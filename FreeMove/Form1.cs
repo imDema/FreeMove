@@ -205,7 +205,7 @@ namespace FreeMove
 
         public static void Unauthorized(Exception ex)
         {
-            MessageBox.Show("The error was caused by a file which couldn't be moved, it may be in use or you may not have the required permissions.\n\nTry running this program as administrator and/or close any program that is using the file specified in the details\n\nDETAILS: " + ex.Message, "Error details");
+            MessageBox.Show(Properties.Resources.ErrorUnauthorizedMoveDetails + ex.Message, "Error details");
         }
         #endregion
 
@@ -268,7 +268,7 @@ namespace FreeMove
                     else
                     {
                         //Handle linking error
-                        var result = MessageBox.Show("ERROR creating symbolic link.\nThe folder is in the new position but the link could not be created.\nTry running as administrator\n\nDo you want to move the files back?", "ERROR, could not create a directory junction", MessageBoxButtons.YesNo);
+                        var result = MessageBox.Show(Properties.Resources.ErrorUnauthorizedLink, "ERROR, could not create a directory junction", MessageBoxButtons.YesNo);
                         if (result == DialogResult.Yes)
                         {
                             StartMoving(destination, source, true, "Wait, moving files back...");
