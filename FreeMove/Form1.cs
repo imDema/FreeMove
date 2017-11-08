@@ -76,7 +76,7 @@ namespace FreeMove
                 errors += "ERROR, invalid path name\n\n";
                 passing = false;
             }
-            string pattern = @"^[A-Z]:\\";
+            string pattern = @"^[A-Z]:\\{1,2}";
             if (!Regex.IsMatch(source,pattern) || !Regex.IsMatch(destination,pattern))
             {
                 errors += "ERROR, invalid path format\n\n";
@@ -205,7 +205,7 @@ namespace FreeMove
 
         public static void Unauthorized(Exception ex)
         {
-            MessageBox.Show("ERROR: a file could not be moved, it may be in use or you may not have the required permissions.\n\nTry running this program as administrator and/or close any program that is using the file specified in the details\n\nDETAILS: " + ex.Message, "Unauthorized Access");
+            MessageBox.Show("The error was caused by a file which couldn't be moved, it may be in use or you may not have the required permissions.\n\nTry running this program as administrator and/or close any program that is using the file specified in the details\n\nDETAILS: " + ex.Message, "Error details");
         }
         #endregion
 
@@ -215,7 +215,7 @@ namespace FreeMove
             //Get the original and the new path from the textboxes
             string source, destination;
             source = textBox_From.Text.TrimEnd('\\');
-            destination = Path.Combine(textBox_To.Text.TrimEnd('\\'), Path.GetFileName(source));
+            destination = Path.Combine(textBox_To.Text.Length > 3 ? textBox_To.Text.TrimEnd('\\') : textBox_To.Text, Path.GetFileName(source));
 
             //Check for errors before copying
             if (CheckFolders(source, destination))
