@@ -75,6 +75,12 @@ namespace FreeMove
                         return MoveFolder(source, destination, true);
 
                     case DialogResult.Ignore:
+                        if ((DialogResult)Invoke(new Func<DialogResult>(() => MessageBox.Show(this, "Are you sure you want to proceed?\n\nBy ignoring you will leave all the files as they are now: part of the files will already be in the new location and missing from the old one!", "", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))) != DialogResult.Yes)
+                        {
+                            return MoveFolder(source, destination, true);
+                        }
+
+                        //else
                         try
                         {
                             using (TextWriter tw = new StreamWriter(File.OpenWrite(Path.Combine(source + "\\~README~FREEMOVE~ERROR.txt"))))
