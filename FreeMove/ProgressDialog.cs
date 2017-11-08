@@ -62,7 +62,7 @@ namespace FreeMove
             catch (UnauthorizedAccessException ex)
             {
                 switch((DialogResult)Invoke(new Func<DialogResult>
-                    (() => MessageBox.Show(this, $"Error: {ex.Message}\n\nHow do you want to proceed?\n\"Abort\" to revert changes\n\"Ignore\" to stop the program","Error while moving contents",  MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error,MessageBoxDefaultButton.Button2,MessageBoxOptions.RightAlign))))
+                    (() => MessageBox.Show(this, String.Format(Properties.Resources.ErrorUnauthorizedMoveMessage , ex.Message),"Error while moving contents",  MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error,MessageBoxDefaultButton.Button2,MessageBoxOptions.RightAlign))))
                 {
                     default:
                     case DialogResult.Abort:
@@ -75,7 +75,7 @@ namespace FreeMove
                         return MoveFolder(source, destination, true);
 
                     case DialogResult.Ignore:
-                        if ((DialogResult)Invoke(new Func<DialogResult>(() => MessageBox.Show(this, "Are you sure you want to proceed?\n\nBy ignoring you will leave all the files as they are now: part of the files will already be in the new location and missing from the old one!", "", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))) != DialogResult.Yes)
+                        if ((DialogResult)Invoke(new Func<DialogResult>(() => MessageBox.Show(this, Properties.Resources.IgnoreMessage, "", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))) != DialogResult.Yes)
                         {
                             return MoveFolder(source, destination, true);
                         }
@@ -85,7 +85,7 @@ namespace FreeMove
                         {
                             using (TextWriter tw = new StreamWriter(File.OpenWrite(Path.Combine(source + "\\~README~FREEMOVE~ERROR.txt"))))
                             {
-                                 tw.Write($"There was an error when moving the files using FreeMove on {DateTime.Now.ToString()} and you chose to ignore it.\nThe rest of the contents of this directory can be found at \"{destination}\" unless they were moved.\nNext time use \"Abort\" in case of an error to move the files back or \"Retry\" to try again.\n\nIf this text file was useful or if you would have preferred it wasn't created let me know.\n");
+                                 tw.Write(String.Format(Properties.Resources.IgnoreTextFile, DateTime.Now.ToString(), destination));
                             }
                         }
                         catch (Exception) { }
