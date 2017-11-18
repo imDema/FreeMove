@@ -27,3 +27,8 @@ To uninstall you a program you should proceed as you would do normally without d
 
 ## Moving back a program
 Delete the junction (this won't delete the content) in the old position and move the directory back to its original position
+
+
+---------------------------------------------------------------------
+
+If you feel like donating `BTC: 1JS3BEuuXoRyhZnBwFsxQW6JypCnRRmhZD`
