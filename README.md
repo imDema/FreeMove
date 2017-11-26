@@ -31,4 +31,9 @@ Delete the junction (this won't delete the content) in the old position and move
 
 ---------------------------------------------------------------------
 
-If you feel like donating `BTC: 1JS3BEuuXoRyhZnBwFsxQW6JypCnRRmhZD`
+Tip if you feel like it
+
+```
+BTC: 1JS3BEuuXoRyhZnBwFsxQW6JypCnRRmhZD
+ETH: 0x2E0A0bcB7F7fE5Dc1c57324cF4c2D53149BCAAb5
+```
