@@ -4,7 +4,7 @@ Move directories (even from one drive to another) freely without breaking instal
 If a program installs on C:\ by default or you want to move the installation folder of a program to somewhere else without breaking it you can use this program.
 ## How It works
 1. The files are moved to the new location
-2. A directory junction is created from the old location to the new one. This way trying to access a file from its old location will simply redirect to the new one
+2. A [symbolic link](https://en.wikipedia.org/wiki/NTFS_symbolic_link) is created from the old directory to the new one. This way trying to access a file from its old location will simply redirect to the new one
 ## Usage
 [Download the latest release](https://github.com/imDema/FreeMove/releases/latest)
 
@@ -27,3 +27,12 @@ To uninstall you a program you should proceed as you would do normally without d
 
 ## Moving back a program
 Delete the junction (this won't delete the content) in the old position and move the directory back to its original position
+
+
+---------------------------------------------------------------------
+
+If you want to offer me a beer
+```
+BTC: 1Q5Sw6Xgnvoop168MMT9seaHnoPDJj7YX6
+ETH: 0x42582391a7AB8767880B7fFcef3A7f505E5aDEE9
+```
