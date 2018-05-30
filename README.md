@@ -1,4 +1,6 @@
 # FreeMove
+[![license](https://img.shields.io/github/license/ImDema/FreeMove.svg)](https://github.com/imDema/FreeMove/blob/master/LICENSE.txt)
+
 Move directories (even from one drive to another) freely without breaking installations or shortcuts
 
 If a program installs on C:\ by default or you want to move the installation folder of a program to somewhere else without breaking it you can use this program.
@@ -8,7 +10,7 @@ If a program installs on C:\ by default or you want to move the installation fol
 
 ## Download
 
-[![Github All Releases](https://img.shields.io/github/downloads/atom/atom/total.svg)](https://github.com/imDema/FreeMove/releases/latest)
+[![Github All Releases](https://img.shields.io/github/downloads/imDema/FreeMove/total.svg)](https://github.com/imDema/FreeMove/releases/latest)
 
 [Download the latest release](https://github.com/imDema/FreeMove/releases/latest)
 
