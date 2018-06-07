@@ -82,6 +82,7 @@ namespace FreeMove
 
         public async Task<bool> CheckGitHub()
         {
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             Stream ResponseStream = Silent ? GetGitHubStream() : await GetGitHubStreamAsync();
 
             TextReader Reader = new StreamReader(ResponseStream);

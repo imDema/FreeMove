@@ -33,6 +33,7 @@ Delete the junction (this won't delete the content) in the old position and move
 
 If you want to offer me a beer
 ```
-BTC: 1Q5Sw6Xgnvoop168MMT9seaHnoPDJj7YX6
-ETH: 0x42582391a7AB8767880B7fFcef3A7f505E5aDEE9
+BTC:    326HDAYj5bJ5sDn6RcnHnvNEfDkk466USX
+ETH:    0xf48E9A99602D6eCC685E33837A47130D7C5fd65D
+NANO:   xrb_3ntghh4bej57is4noa1sxaiefgxinwfqraxm5donp1qdeytnmnoamdq9xfxh
 ```

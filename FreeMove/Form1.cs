@@ -28,7 +28,7 @@ namespace FreeMove
             SetToolTips();
 
             //Check whether the program is set to update on its start
-            if (Settings.AutoUpdate())
+            if (Settings.AutoUpdate)
             {
                 //Update the menu item accordingly
                 checkOnProgramStartToolStripMenuItem.Checked = true;
@@ -36,6 +36,10 @@ namespace FreeMove
                 Updater updater = await Task<bool>.Run(() => Updater.SilentCheck());
                 //If there is an update show the update dialog
                 if (updater != null) updater.ShowDialog();
+            }
+            if(Settings.PermCheck)
+            {
+                PermissionCheckToolStripMenuItem.Checked = true;
             }
         }
 
@@ -105,7 +109,7 @@ namespace FreeMove
                 errors += "ERROR, destination folder already contains a folder with the same name\n\n";
                 passing = false;
             }
-            if (!Directory.Exists(Directory.GetParent(destination).FullName))
+            if (passing && !Directory.Exists(Directory.GetParent(destination).FullName))
             {
                 errors += "destination folder doesn't exist\n\n";
                 passing = false;
@@ -141,6 +145,42 @@ namespace FreeMove
                 }
                 if (Directory.Exists(TestFile))
                     Directory.Delete(TestFile);
+
+                //If set to do full check try to open for write all files
+                if(passing && Settings.PermCheck)
+                {
+                    Parallel.ForEach(Directory.GetFiles(source), file =>
+                    {
+                        CheckFile(file);
+                    });
+                    Parallel.ForEach(Directory.GetDirectories(source), dir =>
+                    {
+                        Parallel.ForEach(Directory.GetFiles(dir), file =>
+                        {
+                            CheckFile(file);
+                        });
+                    });
+
+                    void CheckFile(string file)
+                    {
+                        FileInfo fi = new FileInfo(file);
+                        FileStream fs = null;
+                        try
+                        {
+                            fs = fi.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+                        }
+                        catch (IOException ex)
+                        {
+                            passing = false;
+                            errors += $"{ex.Message}\n";
+                        }
+                        finally
+                        {
+                            if (fs != null)
+                                fs.Dispose();
+                        }
+                    }
+                }
             }
 
             //Check if there's enough free space on disk
@@ -162,55 +202,12 @@ namespace FreeMove
 
 
             if (!passing)
-                MessageBox.Show(errors);
+                MessageBox.Show(errors, "Errors encounered during preliminary phase");
 
             return passing;
         }
 
-        private bool StartMoving(string source, string destination, bool doNotReplace, string ProgressMessage)
-        {
-            return _StartMoving(new MoveDialog(source, destination, doNotReplace, ProgressMessage));
-        }
-        private bool StartMoving(string source, string destination, bool doNotReplace)
-        {
-            return _StartMoving(new MoveDialog(source, destination, doNotReplace));
-        }
-        private bool _StartMoving(MoveDialog mvDiag)
-        {
-            mvDiag.ShowDialog();
-            return mvDiag.Result;
-        }
-
-        //Configure tooltips
-        private void SetToolTips()
-        {
-            ToolTip Tip = new ToolTip()
-            {
-                ShowAlways = true,
-                AutoPopDelay = 5000,
-                InitialDelay = 600,
-                ReshowDelay = 500
-            };
-            Tip.SetToolTip(this.textBox_From, "Select the folder you want to move");
-            Tip.SetToolTip(this.textBox_To, "Select where you want to move the folder");
-            Tip.SetToolTip(this.checkBox1, "Select whether you want to hide the shortcut which is created in the old location or not");
-        }
-
-        private void Reset()
-        {
-            textBox_From.Text = "";
-            textBox_To.Text = "";
-            textBox_From.Focus();
-        }
-
-        public static void Unauthorized(Exception ex)
-        {
-            MessageBox.Show(Properties.Resources.ErrorUnauthorizedMoveDetails + ex.Message, "Error details");
-        }
-        #endregion
-
-        #region Event Handlers
-        private void Button_Move_Click(object sender, EventArgs e)
+        private void Begin()
         {
             //Get the original and the new path from the textboxes
             string source, destination;
@@ -276,6 +273,55 @@ namespace FreeMove
                     }
                 }
             }
+
+        }
+
+        private bool StartMoving(string source, string destination, bool doNotReplace, string ProgressMessage)
+        {
+            return _StartMoving(new MoveDialog(source, destination, doNotReplace, ProgressMessage));
+        }
+        private bool StartMoving(string source, string destination, bool doNotReplace)
+        {
+            return _StartMoving(new MoveDialog(source, destination, doNotReplace));
+        }
+        private bool _StartMoving(MoveDialog mvDiag)
+        {
+            mvDiag.ShowDialog();
+            return mvDiag.Result;
+        }
+
+        //Configure tooltips
+        private void SetToolTips()
+        {
+            ToolTip Tip = new ToolTip()
+            {
+                ShowAlways = true,
+                AutoPopDelay = 5000,
+                InitialDelay = 600,
+                ReshowDelay = 500
+            };
+            Tip.SetToolTip(this.textBox_From, "Select the folder you want to move");
+            Tip.SetToolTip(this.textBox_To, "Select where you want to move the folder");
+            Tip.SetToolTip(this.checkBox1, "Select whether you want to hide the shortcut which is created in the old location or not");
+        }
+
+        private void Reset()
+        {
+            textBox_From.Text = "";
+            textBox_To.Text = "";
+            textBox_From.Focus();
+        }
+
+        public static void Unauthorized(Exception ex)
+        {
+            MessageBox.Show(Properties.Resources.ErrorUnauthorizedMoveDetails + ex.Message, "Error details");
+        }
+        #endregion
+
+        #region Event Handlers
+        private void Button_Move_Click(object sender, EventArgs e)
+        {
+            Begin();
         }
 
         //Show a directory picker for the source directory
@@ -295,6 +341,15 @@ namespace FreeMove
             if (result == DialogResult.OK)
             {
                 textBox_To.Text = folderBrowserDialog1.SelectedPath;
+            }
+        }
+
+        //Start on enter key press
+        private void TextBox_To_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                Begin();
             }
         }
 
@@ -326,13 +381,19 @@ namespace FreeMove
         private void CheckOnProgramStartToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Settings.ToggleAutoUpdate();
-            checkOnProgramStartToolStripMenuItem.Checked = Settings.AutoUpdate();
+            checkOnProgramStartToolStripMenuItem.Checked = Settings.AutoUpdate;
         }
         #endregion
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("ImDema/FreeMove\n\nFreeMove is licensed under the GNU General Public License v3.0\nFor more informations https://github.com/imDema/FreeMove/blob/master/LICENSE.txt \n\nhttps://github.com/imDema", "About FreeMove");
+        }
+
+        private void FullPermissionCheckToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings.TogglePermCheck();
+            PermissionCheckToolStripMenuItem.Checked = Settings.PermCheck; 
         }
     }
 }

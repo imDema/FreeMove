@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Xml.Serialization;
-
+using System.Windows.Forms;
 
 namespace FreeMove
 {
@@ -15,11 +15,24 @@ namespace FreeMove
         //Values
         public bool AutomaticUpdate = false;
 
+        public bool PermissionCheck = true;
 
-        public static bool AutoUpdate()
+        public static bool AutoUpdate
         {
-            var LSett = Load();
-            return LSett != null ? LSett.AutomaticUpdate : false;
+            get
+            {
+                var LSett = Load();
+                return LSett != null ? LSett.AutomaticUpdate : false;
+            }
+        }
+
+        public static bool PermCheck
+        {
+            get
+            {
+                var LSett = Load();
+                return LSett != null ? LSett.PermissionCheck : true;
+            }
         }
 
         private static void Save(Settings set)
@@ -61,6 +74,13 @@ namespace FreeMove
         {
             Settings LoadedSettings = Load();
             LoadedSettings.AutomaticUpdate = !LoadedSettings.AutomaticUpdate;
+            Save(LoadedSettings);
+        }
+
+        public static void TogglePermCheck()
+        {
+            Settings LoadedSettings = Load();
+            LoadedSettings.PermissionCheck = !LoadedSettings.PermissionCheck;
             Save(LoadedSettings);
         }
     }

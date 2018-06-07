@@ -38,6 +38,7 @@ namespace FreeMove
             base.OnShown(e);
             Result = await Task.Run(() => MoveFolder(Source, Destination, DoNotReplace));
             Close();
+            Dispose();
         }
 
         private bool MoveFolder(string source, string destination, bool doNotReplace)
@@ -68,7 +69,6 @@ namespace FreeMove
                     case DialogResult.Abort:
                         MoveFolder(destination, source, true, "Moving the files back, please wait...");
                         Invoke(new Action (() => MessageBox.Show("The contents of the directory were moved back to their original position.")));
-                        Form1.Unauthorized(ex);
                         return false;
 
                     case DialogResult.Retry:
