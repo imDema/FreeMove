@@ -1,12 +1,20 @@
 # FreeMove
+[![license](https://img.shields.io/github/license/ImDema/FreeMove.svg)](https://github.com/imDema/FreeMove/blob/master/LICENSE.txt)
+
 Move directories (even from one drive to another) freely without breaking installations or shortcuts
 
 If a program installs on C:\ by default or you want to move the installation folder of a program to somewhere else without breaking it you can use this program.
-## How It works
+### How It works
 1. The files are moved to the new location
 2. A [symbolic link](https://en.wikipedia.org/wiki/NTFS_symbolic_link) is created from the old directory to the new one. This way trying to access a file from its old location will simply redirect to the new one
-## Usage
+
+## Download
+
+[![Github All Releases](https://img.shields.io/github/downloads/imDema/FreeMove/total.svg)](https://github.com/imDema/FreeMove/releases/latest)
+
 [Download the latest release](https://github.com/imDema/FreeMove/releases/latest)
+
+### Usage
 
 Run the executable and use the GUI
 
