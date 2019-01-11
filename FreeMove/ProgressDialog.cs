@@ -14,47 +14,63 @@ namespace FreeMove
 {
     public partial class MoveDialog : Form
     {
-        string Source, Destination;
-        bool DoNotReplace, Copying;
+        bool Copying;
         int CopyValue, CopyMax;
 
         public bool Result;
 
-        public MoveDialog(string from, string to, bool doNotReplace)
+        public MoveDialog()
         {
             InitializeComponent();
-            Source = from;
-            Destination = to;
-            DoNotReplace = doNotReplace;
         }
 
-        public MoveDialog(string from, string to, bool doNotReplace, string message) : this(from, to, doNotReplace) { label_Message.Text = message; }
+        public MoveDialog(string message) : this() { label_Message.Text = message; }
 
-        public MoveDialog(string from, string to) : this(from, to, false) { }
-        public MoveDialog(string from, string to, string message) : this(from, to, false, message) { }
-
-        protected async override void OnShown(EventArgs e)
+        public void Start(string source, string destination, bool doNotReplace)
         {
-            base.OnShown(e);
-            Result = await Task.Run(() => MoveFolder(Source, Destination, DoNotReplace));
+            //Setup Worker
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += Worker_DoWork;
+            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+            //worker.ProgressChanged += Worker_ProgressChanged;
+
+            CopyMax = Directory.GetFiles(source, "*", SearchOption.AllDirectories).Length;
+            progressBar1.Invoke(new Action(() => progressBar1.Maximum = CopyMax));
+
+            worker.RunWorkerAsync(new Tuple<string, string, bool>(source, destination, doNotReplace));
+        }
+
+        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+
+
+        }
+
+        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Result = (bool)e.Result;
             Close();
             Dispose();
         }
 
+        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            //Args
+            Tuple<string, string, bool> Args = e.Argument as Tuple<string, string, bool>;
+            MoveFolder(Args.Item1, Args.Item2, Args.Item3);
+        }
+
         private bool MoveFolder(string source, string destination, bool doNotReplace)
         {
-            CopyMax = Directory.GetFiles(source, "*", SearchOption.AllDirectories).Length;
-            CopyValue = 0;
+            //Start progress watchdog
             Copying = true;
-            Task ProgressClock = Task.Run(() => { UpdateProgress(); } );
-
-            progressBar1.Invoke(new Action(() => progressBar1.Style = ProgressBarStyle.Continuous));
+            Task.Run(() => UpdateProgress());
             CopyFolder(source, destination, doNotReplace);
-
-            label_Message.Invoke (new Action(() => label_Message.Text = "Please wait..."));
-            label_Progress.Invoke (new Action(() => label_Progress.Text = ""));
-            progressBar1.Invoke(new Action (()=> progressBar1.Style = ProgressBarStyle.Marquee));
             Copying = false;
+
+            label_Message.Invoke(new Action(() => label_Message.Text = "Please wait..."));
+            label_Progress.Invoke(new Action(() => label_Progress.Text = ""));
+            progressBar1.Invoke(new Action(() => progressBar1.Style = ProgressBarStyle.Marquee));
             try
             {
                 Directory.Delete(source, true);
@@ -62,13 +78,13 @@ namespace FreeMove
             }
             catch (UnauthorizedAccessException ex)
             {
-                switch((DialogResult)Invoke(new Func<DialogResult>
-                    (() => MessageBox.Show(this, String.Format(Properties.Resources.ErrorUnauthorizedMoveMessage , ex.Message),"Error while moving contents\n Unauthorized Access Exception",  MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error,MessageBoxDefaultButton.Button2))))
+                switch ((DialogResult)Invoke(new Func<DialogResult>
+                    (() => MessageBox.Show(this, String.Format(Properties.Resources.ErrorUnauthorizedMoveMessage, ex.Message), "Error while moving contents\n Unauthorized Access Exception", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2))))
                 {
                     default:
                     case DialogResult.Abort:
                         MoveFolder(destination, source, true, "Moving the files back, please wait...");
-                        Invoke(new Action (() => MessageBox.Show("The contents of the directory were moved back to their original position.")));
+                        Invoke(new Action(() => MessageBox.Show("The contents of the directory were moved back to their original position.")));
                         return false;
 
                     case DialogResult.Retry:
@@ -85,7 +101,7 @@ namespace FreeMove
                         {
                             using (TextWriter tw = new StreamWriter(File.OpenWrite(Path.Combine(source + "\\~README~FREEMOVE~ERROR.txt"))))
                             {
-                                 tw.Write(String.Format(Properties.Resources.IgnoreTextFile, DateTime.Now.ToString(), destination));
+                                tw.Write(String.Format(Properties.Resources.IgnoreTextFile, DateTime.Now.ToString(), destination));
                             }
                         }
                         catch (Exception) { }
@@ -98,7 +114,7 @@ namespace FreeMove
 
         private bool MoveFolder(string source, string destination, bool doNotReplace, string customText)
         {
-            label_Message.Invoke(new Action (()=>label_Message.Text = customText));
+            label_Message.Invoke(new Action(() => label_Message.Text = customText));
             return MoveFolder(source, destination, doNotReplace);
         }
 
@@ -126,10 +142,9 @@ namespace FreeMove
 
         private void UpdateProgress()
         {
-            progressBar1.Invoke(new Action(() => progressBar1.Maximum = CopyMax));
-            while(Copying)
+            while (Copying)
             {
-                label_Progress.Invoke( new Action(() =>
+                label_Progress.Invoke(new Action(() =>
                 {
                     label_Progress.Text = $"{CopyValue}/{CopyMax}";
                     progressBar1.Value = CopyValue;

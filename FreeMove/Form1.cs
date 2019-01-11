@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace FreeMove
 {
     public partial class Form1 : Form
-    {
+    {        
         bool safeMode = true;
 
         #region Initialization
@@ -39,7 +39,7 @@ namespace FreeMove
                 //If there is an update show the update dialog
                 if (updater != null) updater.ShowDialog();
             }
-            if(Settings.PermCheck)
+            if (Settings.PermCheck)
             {
                 PermissionCheckToolStripMenuItem.Checked = true;
             }
@@ -83,7 +83,7 @@ namespace FreeMove
                 passing = false;
             }
             string pattern = @"^[A-Z]:\\{1,2}";
-            if (!Regex.IsMatch(source,pattern) || !Regex.IsMatch(destination,pattern))
+            if (!Regex.IsMatch(source, pattern) || !Regex.IsMatch(destination, pattern))
             {
                 errors += "ERROR, invalid path format\n\n";
                 passing = false;
@@ -93,7 +93,7 @@ namespace FreeMove
             string[] Blacklist = { @"C:\Windows", @"C:\Windows\System32", @"C:\Windows\Config", @"C:\ProgramData" };
             foreach (string item in Blacklist)
             {
-                if(source == item)
+                if (source == item)
                 {
                     errors += $"Sorry, the \"{source}\" directory cannot be moved.\n\n";
                     passing = false;
@@ -127,7 +127,7 @@ namespace FreeMove
                 passing = false;
             }
 
-            if(passing)
+            if (passing)
             {
                 //Check admin privileges
                 string TestFile = Path.Combine(Path.GetDirectoryName(source), "deleteme");
@@ -159,21 +159,21 @@ namespace FreeMove
                     Directory.Delete(TestFile);
 
                 //If set to do full check try to open for write all files
-                if(passing && Settings.PermCheck)
+                if (passing && Settings.PermCheck)
                 {
                     try
                     {
-                        Parallel.ForEach(Directory.GetFiles(source), file =>
+                    Parallel.ForEach(Directory.GetFiles(source), file =>
+                    {
+                        CheckFile(file);
+                    });
+                    Parallel.ForEach(Directory.GetDirectories(source), dir =>
+                    {
+                        Parallel.ForEach(Directory.GetFiles(dir), file =>
                         {
                             CheckFile(file);
                         });
-                        Parallel.ForEach(Directory.GetDirectories(source), dir =>
-                        {
-                            Parallel.ForEach(Directory.GetFiles(dir), file =>
-                            {
-                                CheckFile(file);
-                            });
-                        });
+                    });
                     }
                     catch(UnauthorizedAccessException ex)
                     {
@@ -217,7 +217,7 @@ namespace FreeMove
                 {
                     errors += $"There is not enough free space on the {DestDrive.Name} disk. {Size / 1000000}MB required, {DestDrive.AvailableFreeSpace / 1000000} available.\n\n";
                     passing = false;
-                } 
+                }
             }
 
 
@@ -296,16 +296,13 @@ namespace FreeMove
 
         }
 
-        private bool StartMoving(string source, string destination, bool doNotReplace, string ProgressMessage)
+        private bool StartMoving(string source, string destination, bool doNotReplace, string ProgressMessage) => _StartMoving(new MoveDialog(ProgressMessage), source, destination, doNotReplace);
+
+        private bool StartMoving(string source, string destination, bool doNotReplace) => _StartMoving(new MoveDialog(), source, destination, doNotReplace);
+
+        private bool _StartMoving(MoveDialog mvDiag, string source, string destination, bool doNotReplace)
         {
-            return _StartMoving(new MoveDialog(source, destination, doNotReplace, ProgressMessage));
-        }
-        private bool StartMoving(string source, string destination, bool doNotReplace)
-        {
-            return _StartMoving(new MoveDialog(source, destination, doNotReplace));
-        }
-        private bool _StartMoving(MoveDialog mvDiag)
-        {
+            mvDiag.Start(source, destination, doNotReplace);
             mvDiag.ShowDialog();
             return mvDiag.Result;
         }
@@ -367,7 +364,7 @@ namespace FreeMove
         //Start on enter key press
         private void TextBox_To_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
                 Begin();
             }
@@ -390,7 +387,7 @@ namespace FreeMove
         {
             Process.Start("https://github.com/imDema/FreeMove/issues/new");
         }
-        
+
         //Show an update dialog
         private void CheckNowToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -413,7 +410,7 @@ namespace FreeMove
         private void FullPermissionCheckToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Settings.TogglePermCheck();
-            PermissionCheckToolStripMenuItem.Checked = Settings.PermCheck; 
+            PermissionCheckToolStripMenuItem.Checked = Settings.PermCheck;
         }
     }
 }
