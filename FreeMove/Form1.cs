@@ -16,6 +16,8 @@ namespace FreeMove
 {
     public partial class Form1 : Form
     {
+        bool safeMode = true;
+
         #region Initialization
         public Form1()
         {
@@ -98,6 +100,16 @@ namespace FreeMove
                 }
             }
 
+            //Check if folder is critical
+            if(safeMode)
+            if( //Regex.IsMatch(source, "^" + Environment.GetFolderPath(Environment.SpecialFolder.Windows)) ||
+                source == Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) ||
+                source == Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86))
+            {
+                    errors += $"It's recommended not to move the {source} directory, you can disable safe mode in the Settings tab to override this check";
+                    passing = false;
+            }
+
             //Check for existence of directories
             if (!Directory.Exists(source))
             {
@@ -149,17 +161,25 @@ namespace FreeMove
                 //If set to do full check try to open for write all files
                 if(passing && Settings.PermCheck)
                 {
-                    Parallel.ForEach(Directory.GetFiles(source), file =>
+                    try
                     {
-                        CheckFile(file);
-                    });
-                    Parallel.ForEach(Directory.GetDirectories(source), dir =>
-                    {
-                        Parallel.ForEach(Directory.GetFiles(dir), file =>
+                        Parallel.ForEach(Directory.GetFiles(source), file =>
                         {
                             CheckFile(file);
                         });
-                    });
+                        Parallel.ForEach(Directory.GetDirectories(source), dir =>
+                        {
+                            Parallel.ForEach(Directory.GetFiles(dir), file =>
+                            {
+                                CheckFile(file);
+                            });
+                        });
+                    }
+                    catch(UnauthorizedAccessException ex)
+                    {
+                        passing = false;
+                        errors += $"{ex.Message}\n";
+                    }
 
                     void CheckFile(string file)
                     {
