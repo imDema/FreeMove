@@ -125,6 +125,12 @@ For more informations https://github.com/imDema/FreeMove/blob/master/LICENSE.txt
 
 https://github.com/imDema</value>
   </data>
+  <data name="DisableSafeModeMessage" xml:space="preserve">
+    <value>It's strongly recommended not to move the "Program Files" or the "Program Files (x86)" directories as it can lead to unexpexted behaviour.
+You are free to move any of the programs contained in those directories without any problem instead.
+
+Are you sure you want to disable safe mode?</value>
+  </data>
   <data name="ErrorUnauthorizedLink" xml:space="preserve">
     <value>ERROR creating symbolic link.
 The folder is in the new position but the link could not be created.

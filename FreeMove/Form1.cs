@@ -175,7 +175,7 @@ namespace FreeMove
                             });
                         });
                     }
-                    catch(UnauthorizedAccessException ex)
+                    catch(Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
                     {
                         passing = false;
                         errors += $"{ex.Message}\n";
@@ -189,7 +189,7 @@ namespace FreeMove
                         {
                             fs = fi.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
                         }
-                        catch (IOException ex)
+                        catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
                         {
                             passing = false;
                             errors += $"{ex.Message}\n";
@@ -222,7 +222,7 @@ namespace FreeMove
 
 
             if (!passing)
-                MessageBox.Show(errors, "Errors encounered during preliminary phase");
+                MessageBox.Show(errors, "Errors encountered during preliminary phase");
 
             return passing;
         }
@@ -415,6 +415,16 @@ namespace FreeMove
         {
             Settings.TogglePermCheck();
             PermissionCheckToolStripMenuItem.Checked = Settings.PermCheck;
+        }
+
+        private void SafeModeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show(Properties.Resources.DisableSafeModeMessage, "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+            {
+                safeMode = false;
+                safeModeToolStripMenuItem.Checked = false;
+                safeModeToolStripMenuItem.Enabled = false;
+            }
         }
     }
 }

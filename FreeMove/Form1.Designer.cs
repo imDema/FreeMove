@@ -49,6 +49,7 @@
             this.reportAnIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gitHubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.safeModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -154,7 +155,8 @@
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.checkForUpdateToolStripMenuItem,
-            this.PermissionCheckToolStripMenuItem});
+            this.PermissionCheckToolStripMenuItem,
+            this.safeModeToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.settingsToolStripMenuItem.Text = "Settings";
@@ -224,6 +226,15 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
+            // safeModeToolStripMenuItem
+            // 
+            this.safeModeToolStripMenuItem.Checked = true;
+            this.safeModeToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.safeModeToolStripMenuItem.Name = "safeModeToolStripMenuItem";
+            this.safeModeToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.safeModeToolStripMenuItem.Text = "Safe mode";
+            this.safeModeToolStripMenuItem.Click += new System.EventHandler(this.SafeModeToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -275,6 +286,7 @@
         private System.Windows.Forms.ToolStripMenuItem checkNowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem checkOnProgramStartToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem PermissionCheckToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem safeModeToolStripMenuItem;
     }
 }
 

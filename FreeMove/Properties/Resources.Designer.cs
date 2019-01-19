@@ -75,6 +75,18 @@ namespace FreeMove.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It&apos;s strongly recommended not to move the &quot;Program Files&quot; or the &quot;Program Files (x86)&quot; directories as it can lead to unexpexted behaviour.
+        ///You are free to move any of the programs contained in those directories without any problem instead.
+        ///
+        ///Are you sure you want to disable safe mode?.
+        /// </summary>
+        internal static string DisableSafeModeMessage {
+            get {
+                return ResourceManager.GetString("DisableSafeModeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ERROR creating symbolic link.
         ///The folder is in the new position but the link could not be created.
         ///Try running as administrator
