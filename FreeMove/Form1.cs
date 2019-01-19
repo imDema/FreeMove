@@ -261,7 +261,7 @@ namespace FreeMove
                         Enabled = true;
                     }
                 }
-                //If they are on different drives move them manually using filestrams
+                //If they are on different drives move them manually using filestreams
                 else
                 {
                     success = StartMoving(source, destination, false);
@@ -296,13 +296,16 @@ namespace FreeMove
 
         }
 
-        private bool StartMoving(string source, string destination, bool doNotReplace, string ProgressMessage) => _StartMoving(new MoveDialog(ProgressMessage), source, destination, doNotReplace);
-
-        private bool StartMoving(string source, string destination, bool doNotReplace) => _StartMoving(new MoveDialog(), source, destination, doNotReplace);
-
-        private bool _StartMoving(MoveDialog mvDiag, string source, string destination, bool doNotReplace)
+        private bool StartMoving(string source, string destination, bool doNotReplace, string ProgressMessage)
         {
-            mvDiag.Start(source, destination, doNotReplace);
+            var mvDiag = new MoveDialog(source, destination, doNotReplace, ProgressMessage);
+            mvDiag.ShowDialog();
+            return mvDiag.Result;
+        }
+
+        private bool StartMoving(string source, string destination, bool doNotReplace)
+        {
+            var mvDiag = new MoveDialog(source, destination, doNotReplace);
             mvDiag.ShowDialog();
             return mvDiag.Result;
         }

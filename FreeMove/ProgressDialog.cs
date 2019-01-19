@@ -16,39 +16,50 @@ namespace FreeMove
     {
         bool Copying;
         int CopyValue, CopyMax;
+        string src, dst;
+        bool noReplace;
 
         public bool Result;
 
-        public MoveDialog()
+        public MoveDialog(string src, string dst, bool noReplace)
         {
+            this.src = src;
+            this.dst = dst;
+            this.noReplace = noReplace;
             InitializeComponent();
         }
 
-        public MoveDialog(string message) : this() { label_Message.Text = message; }
+        public MoveDialog(string src, string dst, bool noReplace, string message) : this(src, dst, noReplace) { label_Message.Text = message; }
 
-        public void Start(string source, string destination, bool doNotReplace)
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            Start();
+        }
+
+        public void Start()
         {
             //Setup Worker
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += Worker_DoWork;
             worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
-            //worker.ProgressChanged += Worker_ProgressChanged;
 
-            CopyMax = Directory.GetFiles(source, "*", SearchOption.AllDirectories).Length;
+            //Set text
+            CopyMax = Directory.GetFiles(src, "*", SearchOption.AllDirectories).Length;
             progressBar1.Invoke(new Action(() => progressBar1.Maximum = CopyMax));
 
-            worker.RunWorkerAsync(new Tuple<string, string, bool>(source, destination, doNotReplace));
+            //Start worker
+            worker.RunWorkerAsync(new Tuple<string, string, bool>(src, dst, noReplace));
         }
 
-        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-
-
-        }
+        //private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {  }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Result = (bool)e.Result;
+            if (e.Cancelled || e.Error != null)
+                Result = false;
+            else
+                Result = (bool)e.Result;
             Close();
             Dispose();
         }
@@ -57,20 +68,33 @@ namespace FreeMove
         {
             //Args
             Tuple<string, string, bool> Args = e.Argument as Tuple<string, string, bool>;
-            MoveFolder(Args.Item1, Args.Item2, Args.Item3);
+            e.Result = MoveFolder(Args.Item1, Args.Item2, Args.Item3);
         }
 
         private bool MoveFolder(string source, string destination, bool doNotReplace)
         {
-            //Start progress watchdog
+            //Copy directory to new location
             Copying = true;
             Task.Run(() => UpdateProgress());
             CopyFolder(source, destination, doNotReplace);
             Copying = false;
 
+            //Try deleting the old files
             label_Message.Invoke(new Action(() => label_Message.Text = "Please wait..."));
             label_Progress.Invoke(new Action(() => label_Progress.Text = ""));
             progressBar1.Invoke(new Action(() => progressBar1.Style = ProgressBarStyle.Marquee));
+
+            return TryDelete(source, destination);
+        }
+
+        private bool MoveFolder(string source, string destination, bool doNotReplace, string customText)
+        {
+            label_Message.Invoke(new Action(() => label_Message.Text = customText));
+            return MoveFolder(source, destination, doNotReplace);
+        }
+
+        private bool TryDelete(string source, string destination)
+        {
             try
             {
                 Directory.Delete(source, true);
@@ -110,12 +134,6 @@ namespace FreeMove
                         return false;
                 }
             }
-        }
-
-        private bool MoveFolder(string source, string destination, bool doNotReplace, string customText)
-        {
-            label_Message.Invoke(new Action(() => label_Message.Text = customText));
-            return MoveFolder(source, destination, doNotReplace);
         }
 
         private void CopyFolder(string sourceFolder, string destFolder, bool doNotReplace)
