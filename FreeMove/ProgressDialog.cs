@@ -107,21 +107,20 @@ namespace FreeMove
                 switch ((DialogResult)Invoke(new Func<DialogResult>
                     (() => MessageBox.Show(this, String.Format(Properties.Resources.ErrorUnauthorizedMoveMessage, ex.Message), "Error while moving contents\n Unauthorized Access Exception", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2))))
                 {
+                    case DialogResult.Retry:
+                        return MoveFolder(source, destination, true);
+
                     default:
                     case DialogResult.Abort:
                         MoveFolder(destination, source, true, "Moving the files back, please wait...");
                         Invoke(new Action(() => MessageBox.Show("The contents of the directory were moved back to their original position.")));
-                        return false;
-
-                    case DialogResult.Retry:
-                        return MoveFolder(source, destination, true);
+                    break;
 
                     case DialogResult.Ignore:
                         if ((DialogResult)Invoke(new Func<DialogResult>(() => MessageBox.Show(this, Properties.Resources.IgnoreMessage, "", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))) != DialogResult.Yes)
                         {
                             return MoveFolder(source, destination, true);
                         }
-
                         //else
                         try
                         {
@@ -131,10 +130,10 @@ namespace FreeMove
                             }
                         }
                         catch (Exception) { }
-
-                        Form1.Unauthorized(ex);
-                        return false;
+                    break;
                 }
+                Form1.Unauthorized(ex);
+                return false;
             }
         }
 
