@@ -75,6 +75,8 @@ namespace FreeMove
         {
             //Copy directory to new location
             Copying = true;
+            CopyValue = 0;
+            progressBar1.Invoke(new Action(() => progressBar1.Style = ProgressBarStyle.Continuous));
             Task.Run(() => UpdateProgress());
             CopyFolder(source, destination, doNotReplace);
             Copying = false;
