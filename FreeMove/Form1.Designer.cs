@@ -184,8 +184,6 @@
             // 
             // PermissionCheckToolStripMenuItem
             // 
-            this.PermissionCheckToolStripMenuItem.Checked = true;
-            this.PermissionCheckToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.PermissionCheckToolStripMenuItem.Name = "PermissionCheckToolStripMenuItem";
             this.PermissionCheckToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.PermissionCheckToolStripMenuItem.Text = "Full permission check";
