@@ -407,7 +407,8 @@ namespace FreeMove
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("ImDema/FreeMove\n\nFreeMove is licensed under the GNU General Public License v3.0\nFor more informations https://github.com/imDema/FreeMove/blob/master/LICENSE.txt \n\nhttps://github.com/imDema", "About FreeMove");
+            string msg = String.Format(Properties.Resources.AboutContent, System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion);
+            MessageBox.Show(msg, "About FreeMove");
         }
 
         private void FullPermissionCheckToolStripMenuItem_Click(object sender, EventArgs e)

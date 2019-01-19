@@ -61,6 +61,20 @@ namespace FreeMove.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ImDema/FreeMove {0}
+        ///
+        ///This program is licensed under the GNU General Public License v3.0
+        ///For more informations https://github.com/imDema/FreeMove/blob/master/LICENSE.txt 
+        ///
+        ///https://github.com/imDema.
+        /// </summary>
+        internal static string AboutContent {
+            get {
+                return ResourceManager.GetString("AboutContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ERROR creating symbolic link.
         ///The folder is in the new position but the link could not be created.
         ///Try running as administrator
