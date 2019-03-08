@@ -82,7 +82,7 @@ namespace FreeMove
                 errors += "ERROR, invalid path name\n\n";
                 passing = false;
             }
-            string pattern = @"^[A-Z]:\\{1,2}";
+            string pattern = @"^[A-Za-z]:\\{1,2}";
             if (!Regex.IsMatch(source, pattern) || !Regex.IsMatch(destination, pattern))
             {
                 errors += "ERROR, invalid path format\n\n";
