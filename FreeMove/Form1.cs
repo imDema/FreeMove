@@ -60,8 +60,6 @@ namespace FreeMove
             var exceptions = IOHelper.CheckDirectories(source, destination, safeMode);
             if (exceptions.Length == 0)
             {
-                bool success;
-
                 //Move files
                 //If the paths are on the same drive use the .NET Move() method
                 if (Directory.GetDirectoryRoot(source) == Directory.GetDirectoryRoot(destination))
