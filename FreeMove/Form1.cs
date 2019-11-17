@@ -47,185 +47,7 @@ namespace FreeMove
 
         #endregion
 
-        #region SymLink
-        //External dll functions
-        [DllImport("kernel32.dll")]
-        static extern bool CreateSymbolicLink(
-        string lpSymlinkFileName, string lpTargetFileName, SymbolicLink dwFlags);
-
-        enum SymbolicLink
-        {
-            File = 0,
-            Directory = 1
-        }
-
-        private bool MakeLink(string directory, string symlink)
-        {
-            return CreateSymbolicLink(symlink, directory, SymbolicLink.Directory);
-        }
-        #endregion
-
         #region Private Methods
-        private bool CheckFolders(string source, string destination)
-        {
-            bool passing = true; //Set to false if there are one or more errors
-            string errors = ""; //String to show if there is any error
-
-            //Check for correct file path format
-            try
-            {
-                Path.GetFullPath(source);
-                Path.GetFullPath(destination);
-            }
-            catch (Exception)
-            {
-                errors += "ERROR, invalid path name\n\n";
-                passing = false;
-            }
-            string pattern = @"^[A-Za-z]:\\{1,2}";
-            if (!Regex.IsMatch(source, pattern) || !Regex.IsMatch(destination, pattern))
-            {
-                errors += "ERROR, invalid path format\n\n";
-                passing = false;
-            }
-
-            //Check if the chosen directory is blacklisted
-            string[] Blacklist = { @"C:\Windows", @"C:\Windows\System32", @"C:\Windows\Config", @"C:\ProgramData" };
-            foreach (string item in Blacklist)
-            {
-                if (source == item)
-                {
-                    errors += $"Sorry, the \"{source}\" directory cannot be moved.\n\n";
-                    passing = false;
-                }
-            }
-
-            //Check if folder is critical
-            if(safeMode)
-            if( //Regex.IsMatch(source, "^" + Environment.GetFolderPath(Environment.SpecialFolder.Windows)) ||
-                source == Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) ||
-                source == Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86))
-            {
-                    errors += $"It's recommended not to move the {source} directory, you can disable safe mode in the Settings tab to override this check";
-                    passing = false;
-            }
-
-            //Check for existence of directories
-            if (!Directory.Exists(source))
-            {
-                errors += "ERROR, source folder doesn't exist\n\n";
-                passing = false;
-            }
-            if (Directory.Exists(destination))
-            {
-                errors += "ERROR, destination folder already contains a folder with the same name\n\n";
-                passing = false;
-            }
-            if (passing && !Directory.Exists(Directory.GetParent(destination).FullName))
-            {
-                errors += "destination folder doesn't exist\n\n";
-                passing = false;
-            }
-
-            if (passing)
-            {
-                //Check admin privileges
-                string TestFile = Path.Combine(Path.GetDirectoryName(source), "deleteme");
-                while (File.Exists(TestFile)) TestFile += new Random().Next(0, 10).ToString();
-                try
-                {
-                    //Try creating a file to check permissions
-                    System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(source);
-                    File.Create(TestFile).Close();
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    errors += "You do not have the required privileges to move the directory.\nTry running as administrator\n\n";
-                    passing = false;
-                }
-                finally
-                {
-                    if (File.Exists(TestFile))
-                        File.Delete(TestFile);
-                }
-
-                //Try to create a symbolic link to check permissions
-                if (!CreateSymbolicLink(TestFile, Path.GetDirectoryName(destination), SymbolicLink.Directory))
-                {
-                    errors += "Could not create a symbolic link.\nTry running as administrator\n\n";
-                    passing = false;
-                }
-                if (Directory.Exists(TestFile))
-                    Directory.Delete(TestFile);
-
-                //If set to do full check try to open for write all files
-                if (passing && Settings.PermCheck)
-                {
-                    try
-                    {
-                        Parallel.ForEach(Directory.GetFiles(source), file =>
-                        {
-                            CheckFile(file);
-                        });
-                        Parallel.ForEach(Directory.GetDirectories(source), dir =>
-                        {
-                            Parallel.ForEach(Directory.GetFiles(dir), file =>
-                            {
-                                CheckFile(file);
-                            });
-                        });
-                    }
-                    catch(Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
-                    {
-                        passing = false;
-                        errors += $"{ex.Message}\n";
-                    }
-
-                    void CheckFile(string file)
-                    {
-                        FileInfo fi = new FileInfo(file);
-                        FileStream fs = null;
-                        try
-                        {
-                            fs = fi.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
-                        }
-                        catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
-                        {
-                            passing = false;
-                            errors += $"{ex.Message}\n";
-                        }
-                        finally
-                        {
-                            if (fs != null)
-                                fs.Dispose();
-                        }
-                    }
-                }
-            }
-
-            //Check if there's enough free space on disk
-            if (passing)
-            {
-                long Size = 0;
-                DirectoryInfo Dest = new DirectoryInfo(source);
-                foreach (FileInfo file in Dest.GetFiles("*", SearchOption.AllDirectories))
-                {
-                    Size += file.Length;
-                }
-                DriveInfo DestDrive = new DriveInfo(Path.GetPathRoot(destination));
-                if (DestDrive.AvailableFreeSpace < Size)
-                {
-                    errors += $"There is not enough free space on the {DestDrive.Name} disk. {Size / 1000000}MB required, {DestDrive.AvailableFreeSpace / 1000000} available.\n\n";
-                    passing = false;
-                }
-            }
-
-
-            if (!passing)
-                MessageBox.Show(errors, "Errors encountered during preliminary phase");
-
-            return passing;
-        }
 
         private void Begin()
         {
@@ -235,7 +57,8 @@ namespace FreeMove
             destination = Path.Combine(textBox_To.Text.Length > 3 ? textBox_To.Text.TrimEnd('\\') : textBox_To.Text, Path.GetFileName(source));
 
             //Check for errors before copying
-            if (CheckFolders(source, destination))
+            var exceptions = IOHelper.CheckDirectories(source, destination, safeMode);
+            if (exceptions.Length == 0)
             {
                 bool success;
 
@@ -293,7 +116,15 @@ namespace FreeMove
                     }
                 }
             }
-
+            else
+            {
+                var msg = "";
+                foreach (var ex in exceptions)
+                {
+                    msg += "- " + ex.Message + "\n";
+                }
+                MessageBox.Show(msg, "Error");
+            }
         }
 
         private bool StartMoving(string source, string destination, bool doNotReplace, string ProgressMessage)
