@@ -14,18 +14,24 @@ namespace FreeMove
 {
     public partial class MoveDialog : Form
     {
+        struct Config
+        {
+            public string Source;
+            public string Destination;
+            public bool DoNotReplace;
+        }
+
         bool Copying;
         int CopyValue, CopyMax;
-        string src, dst;
-        bool noReplace;
+        Config conf;
 
         public bool Result;
 
-        public MoveDialog(string src, string dst, bool noReplace)
+        public MoveDialog(string source, string destination, bool doNotReplace)
         {
-            this.src = src;
-            this.dst = dst;
-            this.noReplace = noReplace;
+            conf.Source = source;
+            conf.Destination = destination;
+            conf.DoNotReplace = doNotReplace;
             InitializeComponent();
         }
 
@@ -45,11 +51,11 @@ namespace FreeMove
             worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
 
             //Set text
-            CopyMax = Directory.GetFiles(src, "*", SearchOption.AllDirectories).Length;
+            CopyMax = Directory.GetFiles(conf.Source, "*", SearchOption.AllDirectories).Length;
             progressBar1.Invoke(new Action(() => progressBar1.Maximum = CopyMax));
 
             //Start worker
-            worker.RunWorkerAsync(new Tuple<string, string, bool>(src, dst, noReplace));
+            worker.RunWorkerAsync();
         }
 
         //private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {  }
@@ -67,8 +73,7 @@ namespace FreeMove
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             //Args
-            Tuple<string, string, bool> Args = e.Argument as Tuple<string, string, bool>;
-            e.Result = MoveFolder(Args.Item1, Args.Item2, Args.Item3);
+            e.Result = MoveFolder(conf.Source, conf.Destination, conf.DoNotReplace);
         }
 
         private bool MoveFolder(string source, string destination, bool doNotReplace)
@@ -157,6 +162,11 @@ namespace FreeMove
                 string dest = Path.Combine(destFolder, name);
                 CopyFolder(folder, dest, doNotReplace);
             }
+        }
+
+        private void Button_Cancel_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void UpdateProgress()
