@@ -5,6 +5,8 @@ Move directories freely without breaking installations or shortcuts
 
 You can use this tool to move programs that install on C:\ by default to another drive to save space on your main drive
 
+> NOTE: Currently rewriting a lot of old code to make the codebase more robust and maintainable
+
 ### How It works
 1. The files are moved to the new location
 2. A [symbolic link](https://www.wikiwand.com/en/NTFS_junction_point) is created from the old location redirecting to the new one. Any program trying to access a file in the old location will automatically be redirected to its new location
