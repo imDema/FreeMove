@@ -189,29 +189,6 @@ namespace FreeMove
             });
         }
 
-        private static IOResult<string> CopyDirectory(string dirFrom, string dirTo, CancellationToken ct)
-        {
-            if (!Directory.Exists(dirTo))
-                Directory.CreateDirectory(dirTo);
-            string[] files = Directory.GetFiles(dirFrom);
-            foreach (string file in files)
-            {
-                if (ct.IsCancellationRequested)
-                    ct.ThrowIfCancellationRequested();
-
-                string name = Path.GetFileName(file);
-                string dest = Path.Combine(dirTo, name);
-                if (!File.Exists(dest))
-                    File.Copy(file, dest);
-            }
-            string[] folders = Directory.GetDirectories(dirFrom);
-            foreach (string folder in folders)
-            {
-                string name = Path.GetFileName(folder);
-                string dest = Path.Combine(dirTo, name);
-                CopyDirectory(folder, dest, ct);
-            }
-            return IOResult<string>.Ok();
-        }
+        
     }
 }
