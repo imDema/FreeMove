@@ -9,17 +9,15 @@ namespace FreeMove.IO
 {
     public abstract class IOOperation
     {
-        public delegate void ProgressChangedListener(float progress);
-        public event ProgressChangedListener ProgressChanged;
+        public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
+        public event EventHandler Start;
+        public event EventHandler Finish;
+        public event EventHandler Cancelled;
 
-        public delegate void OnStartListener();
-        public event OnStartListener OnStart;
-
-        public delegate void OnFinishListener();
-        public event OnFinishListener OnFinish;
-
-        public delegate void OnCancelListener();
-        public abstract event OnCancelListener OnCancel;
+        protected virtual void OnProgressChanged(ProgressChangedEventArgs e) => ProgressChanged?.Invoke(this, e);
+        protected virtual void OnStart(EventArgs e) => Start?.Invoke(this, e);
+        protected virtual void OnFinish(EventArgs e) => Finish?.Invoke(this, e);
+        protected virtual void OnCancelled(EventArgs e) => Cancelled?.Invoke(this,e);
 
         /// <summary>
         /// Stop task as soon as it's safe to do so
@@ -30,5 +28,15 @@ namespace FreeMove.IO
         /// </summary>
         /// <returns>Async task where the operation was started</returns>
         public abstract Task Run();
+
+        public class ProgressChangedEventArgs : EventArgs
+        {
+            public float Progress { get => progress; }
+            float progress;
+            public ProgressChangedEventArgs(float progress)
+            {
+                this.progress = progress;
+            }
+        }
     }
 }
