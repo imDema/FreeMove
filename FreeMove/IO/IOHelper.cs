@@ -24,7 +24,7 @@ namespace FreeMove
             Directory = 1
         }
 
-        private bool MakeLink(string directory, string symlink)
+        public static bool MakeLink(string directory, string symlink)
         {
             return CreateSymbolicLink(symlink, directory, SymbolicLink.Directory);
         }
@@ -179,16 +179,5 @@ namespace FreeMove
             }
             return exceptions.ToArray();
         }
-
-        public static Task MoveDirectory(string dirFrom, string dirTo, CancellationToken ct)
-        {
-            return Task.Run(() =>
-            {
-                CopyDirectory(dirFrom, dirTo, ct);
-                Directory.Delete(dirFrom);
-            });
-        }
-
-        
     }
 }

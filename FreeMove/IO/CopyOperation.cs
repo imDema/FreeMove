@@ -23,12 +23,12 @@ namespace FreeMove.IO
         {
             if (cts.IsCancellationRequested)
             {
-                base.OnCancelled(new EventArgs());
-                base.OnFinish(new EventArgs());
+                OnCancelled(new EventArgs());
+                OnFinish(new EventArgs());
                 return Task.FromCanceled(cts.Token);
             }
 
-            base.OnStart(new EventArgs());
+            OnStart(new EventArgs());
             return Task.Run(() =>
             {
                 try
@@ -41,7 +41,7 @@ namespace FreeMove.IO
                 }
                 finally
                 {
-                    base.OnFinish(new EventArgs());
+                    OnFinish(new EventArgs());
                 }
             });
         }

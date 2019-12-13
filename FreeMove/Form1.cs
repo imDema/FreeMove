@@ -47,9 +47,7 @@ namespace FreeMove
 
         #endregion
 
-        #region Private Methods
-
-        private void Begin()
+        private async void Begin()
         {
             //Get the original and the new path from the textboxes
             string source, destination;
@@ -61,55 +59,73 @@ namespace FreeMove
             if (exceptions.Length == 0)
             {
                 //Move files
-                //If the paths are on the same drive use the .NET Move() method
-                if (Directory.GetDirectoryRoot(source) == Directory.GetDirectoryRoot(destination))
+                using (ProgressDialog progressDialog = new ProgressDialog("Moving files..."))
                 {
-                    try
+                    IO.MoveOperation moveOp = new IO.MoveOperation(source, destination);
+
+                    moveOp.ProgressChanged += (sender, e) =>
                     {
-                        button_Move.Text = "Moving...";
-                        Enabled = false;
-                        Directory.Move(source, destination);
-                        success = true;
-                    }
-                    catch (IOException ex)
+                        progressDialog.UpdateProgress(e.Progress);
+                    };
+                    moveOp.Finish += (sender, e) =>
                     {
-                        Unauthorized(ex);
-                        success = false;
-                    }
-                    finally
+                        progressDialog.Invoke((Action)progressDialog.Close);
+                    };
+
+                    progressDialog.CancelRequested += (sender, e) =>
                     {
-                        button_Move.Text = "Move";
-                        Enabled = true;
-                    }
+                        moveOp.Cancel();
+                        //TODO Handle Cancellation
+                    };
+
+
+                    Task moveTask = moveOp.Run();
+                    progressDialog.ShowDialog(this);
+
+                    await moveTask; //TODO, Check if successful
                 }
-                //If they are on different drives move them manually using filestreams
+                if (IOHelper.MakeLink(destination, source))
+                {
+                    //If told to make the link hidden
+                    if (checkBox1.Checked)
+                    {
+                        DirectoryInfo olddir = new DirectoryInfo(source);
+                        var attrib = File.GetAttributes(source);
+                        olddir.Attributes = attrib | FileAttributes.Hidden;
+                    }
+                    MessageBox.Show("Done.");
+                    //Reset(); TODO Reimplement this
+                }
                 else
                 {
-                    success = StartMoving(source, destination, false);
-                }
+                    //Handle linking error
+                    var result = MessageBox.Show(Properties.Resources.ErrorUnauthorizedLink, "ERROR, could not create a directory junction", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
+                    {
+                        using (ProgressDialog progressDialog = new ProgressDialog("Moving back files..."))
+                        {
+                            IO.MoveOperation moveOp = new IO.MoveOperation(destination, source);
 
-                //Link the old paths to the new location
-                if (success)
-                {
-                    if (MakeLink(destination, source))
-                    {
-                        //If told to make the link hidden
-                        if (checkBox1.Checked)
-                        {
-                            DirectoryInfo olddir = new DirectoryInfo(source);
-                            var attrib = File.GetAttributes(source);
-                            olddir.Attributes = attrib | FileAttributes.Hidden;
-                        }
-                        MessageBox.Show("Done.");
-                        Reset();
-                    }
-                    else
-                    {
-                        //Handle linking error
-                        var result = MessageBox.Show(Properties.Resources.ErrorUnauthorizedLink, "ERROR, could not create a directory junction", MessageBoxButtons.YesNo);
-                        if (result == DialogResult.Yes)
-                        {
-                            StartMoving(destination, source, true, "Wait, moving files back...");
+                            moveOp.ProgressChanged += (sender, e) =>
+                            {
+                                float progress = ((IO.IOOperation.ProgressChangedEventArgs)e).Progress;
+                                progressDialog.UpdateProgress(progress);
+                            };
+                            moveOp.Finish += (sender, e) =>
+                            {
+                                progressDialog.Close();
+                            };
+
+                            progressDialog.CancelRequested += (sender, e) =>
+                            {
+                                moveOp.Cancel();
+                                //TODO Handle Cancellation
+                            };
+
+                            Task moveTask = moveOp.Run();
+                            progressDialog.ShowDialog(this);
+
+                            await moveTask;
                         }
                     }
                 }
@@ -123,20 +139,6 @@ namespace FreeMove
                 }
                 MessageBox.Show(msg, "Error");
             }
-        }
-
-        private bool StartMoving(string source, string destination, bool doNotReplace, string ProgressMessage)
-        {
-            var mvDiag = new MoveDialog(source, destination, doNotReplace, ProgressMessage);
-            mvDiag.ShowDialog();
-            return mvDiag.Result;
-        }
-
-        private bool StartMoving(string source, string destination, bool doNotReplace)
-        {
-            var mvDiag = new MoveDialog(source, destination, doNotReplace);
-            mvDiag.ShowDialog();
-            return mvDiag.Result;
         }
 
         //Configure tooltips
@@ -165,7 +167,6 @@ namespace FreeMove
         {
             MessageBox.Show(Properties.Resources.ErrorUnauthorizedMoveDetails + ex.Message, "Error details");
         }
-        #endregion
 
         #region Event Handlers
         private void Button_Move_Click(object sender, EventArgs e)

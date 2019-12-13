@@ -1,6 +1,6 @@
 ﻿namespace FreeMove
 {
-    partial class MoveDialog
+    partial class ProgressDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -69,7 +69,6 @@
             this.button_Cancel.TabIndex = 3;
             this.button_Cancel.Text = "Cancel";
             this.button_Cancel.UseVisualStyleBackColor = true;
-            this.button_Cancel.Click += new System.EventHandler(this.Button_Cancel_Click);
             // 
             // MoveDialog
             // 
