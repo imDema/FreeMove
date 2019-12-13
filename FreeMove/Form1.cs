@@ -47,7 +47,7 @@ namespace FreeMove
 
         #endregion
 
-        private async void Begin()
+        private void Begin()
         {
             //Get the original and the new path from the textboxes
             string source, destination;
@@ -78,12 +78,12 @@ namespace FreeMove
                         //TODO Handle Cancellation
                     };
 
-
                     Task moveTask = moveOp.Run();
-                    progressDialog.ShowDialog(this);
-
-                    await moveTask; //TODO, Check if successful
+                    progressDialog.ShowDialog(this); //TODO, Check if successful
+                    if (!moveTask.Wait(30000))
+                        throw new TimeoutException("Timed out waiting for moveTask to end.\nIf you see this please open an issue on https://github.com/imDema/FreeMove/issues/new");
                 }
+
                 if (IOHelper.MakeLink(destination, source))
                 {
                     //If told to make the link hidden
@@ -113,7 +113,7 @@ namespace FreeMove
                             };
                             moveOp.Finish += (sender, e) =>
                             {
-                                progressDialog.Close();
+                                progressDialog.Invoke((Action)progressDialog.Close);
                             };
 
                             progressDialog.CancelRequested += (sender, e) =>
@@ -123,9 +123,9 @@ namespace FreeMove
                             };
 
                             Task moveTask = moveOp.Run();
-                            progressDialog.ShowDialog(this);
-
-                            await moveTask;
+                            progressDialog.ShowDialog(this); //TODO, Check if successful
+                            if (!moveTask.Wait(30000))
+                                throw new TimeoutException("Timed out waiting for moveTask to end.\nIf you see this please open an issue on https://github.com/imDema/FreeMove/issues/new");
                         }
                     }
                 }
