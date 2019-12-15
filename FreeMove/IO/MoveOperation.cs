@@ -12,13 +12,11 @@ namespace FreeMove.IO
     {
         string pathFrom;
         bool sameDrive; //TODO: use System.IO.Move if the files are on the same drive
-        CancellationTokenSource cts;
+        CancellationTokenSource cts = new CancellationTokenSource();
         CopyOperation innerCopy;
 
         public MoveOperation(string pathFrom, string pathTo)
         {
-            cts = new CancellationTokenSource();
-
             this.pathFrom = pathFrom;
             sameDrive = string.Equals(Path.GetPathRoot(pathFrom), Path.GetPathRoot(pathTo), StringComparison.OrdinalIgnoreCase);
 
@@ -33,34 +31,16 @@ namespace FreeMove.IO
 
         public override Task Run()
         {
-            if (cts.IsCancellationRequested)
-            {
-                base.OnCancelled(new EventArgs());
-                base.OnFinish(new EventArgs());
-                return Task.FromCanceled(cts.Token);
-            }
-
-            OnStart(new EventArgs());
             innerCopy.ProgressChanged += (sender, e) => OnProgressChanged(new ProgressChangedEventArgs(e.Progress * 0.99f));
-            
+            innerCopy.Start += (sender, e) => OnStart(e);
+
             Task copyTask = innerCopy.Run();
             return copyTask.ContinueWith(t =>
             {
-                try
-                {
-                    if (!cts.IsCancellationRequested)
-                    {
-                        Directory.Delete(pathFrom, true);
-                        OnProgressChanged(new ProgressChangedEventArgs(1.0f));
-                    }
-                    else
-                        OnCancelled(new EventArgs());
-                }
-                finally
-                {
-                    OnFinish(new EventArgs());
-                }
-            });
+                Directory.Delete(pathFrom, true);
+                OnProgressChanged(new ProgressChangedEventArgs(1.0f));
+                OnCompleted(new EventArgs());
+            }, cts.Token);
         }
     }
 }

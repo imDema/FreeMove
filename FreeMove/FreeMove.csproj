@@ -89,6 +89,7 @@
     <Compile Include="IO\IOHelper.cs" />
     <Compile Include="IO\IOOperation.cs" />
     <Compile Include="IO\IOResult.cs" />
+    <Compile Include="IO\LinkOperation.cs" />
     <Compile Include="IO\MoveOperation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProgressDialog.cs">

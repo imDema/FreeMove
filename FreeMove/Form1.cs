@@ -47,7 +47,7 @@ namespace FreeMove
 
         #endregion
 
-        private void Begin()
+        private async void Begin()
         {
             //Get the original and the new path from the textboxes
             string source, destination;
@@ -56,81 +56,7 @@ namespace FreeMove
 
             //Check for errors before copying
             var exceptions = IOHelper.CheckDirectories(source, destination, safeMode);
-            if (exceptions.Length == 0)
-            {
-                //Move files
-                using (ProgressDialog progressDialog = new ProgressDialog("Moving files..."))
-                {
-                    IO.MoveOperation moveOp = new IO.MoveOperation(source, destination);
-
-                    moveOp.ProgressChanged += (sender, e) =>
-                    {
-                        progressDialog.UpdateProgress(e.Progress);
-                    };
-                    moveOp.Finish += (sender, e) =>
-                    {
-                        progressDialog.Invoke((Action)progressDialog.Close);
-                    };
-
-                    progressDialog.CancelRequested += (sender, e) =>
-                    {
-                        moveOp.Cancel();
-                        //TODO Handle Cancellation
-                    };
-
-                    Task moveTask = moveOp.Run();
-                    progressDialog.ShowDialog(this); //TODO, Check if successful
-                    if (!moveTask.Wait(30000))
-                        throw new TimeoutException("Timed out waiting for moveTask to end.\nIf you see this please open an issue on https://github.com/imDema/FreeMove/issues/new");
-                }
-
-                if (IOHelper.MakeLink(destination, source))
-                {
-                    //If told to make the link hidden
-                    if (checkBox1.Checked)
-                    {
-                        DirectoryInfo olddir = new DirectoryInfo(source);
-                        var attrib = File.GetAttributes(source);
-                        olddir.Attributes = attrib | FileAttributes.Hidden;
-                    }
-                    MessageBox.Show("Done.");
-                    //Reset(); TODO Reimplement this
-                }
-                else
-                {
-                    //Handle linking error
-                    var result = MessageBox.Show(Properties.Resources.ErrorUnauthorizedLink, "ERROR, could not create a directory junction", MessageBoxButtons.YesNo);
-                    if (result == DialogResult.Yes)
-                    {
-                        using (ProgressDialog progressDialog = new ProgressDialog("Moving back files..."))
-                        {
-                            IO.MoveOperation moveOp = new IO.MoveOperation(destination, source);
-
-                            moveOp.ProgressChanged += (sender, e) =>
-                            {
-                                float progress = ((IO.IOOperation.ProgressChangedEventArgs)e).Progress;
-                                progressDialog.UpdateProgress(progress);
-                            };
-                            moveOp.Finish += (sender, e) =>
-                            {
-                                progressDialog.Invoke((Action)progressDialog.Close);
-                            };
-
-                            progressDialog.CancelRequested += (sender, e) =>
-                            {
-                                moveOp.Cancel();
-                                //TODO Handle Cancellation
-                            };
-
-                            Task moveTask = moveOp.Run();
-                            progressDialog.ShowDialog(this); //TODO, Check if successful
-                            if (!moveTask.Wait(30000))
-                                throw new TimeoutException("Timed out waiting for moveTask to end.\nIf you see this please open an issue on https://github.com/imDema/FreeMove/issues/new");
-                        }
-                    }
-                }
-            }
-            else
+            if (exceptions.Length > 0)
             {
                 var msg = "";
                 foreach (var ex in exceptions)
@@ -138,7 +64,121 @@ namespace FreeMove
                     msg += "- " + ex.Message + "\n";
                 }
                 MessageBox.Show(msg, "Error");
+                return;
             }
+
+            bool ok = true;
+
+            //Move files
+            using (ProgressDialog progressDialog = new ProgressDialog("Moving files..."))
+            {
+                IO.MoveOperation moveOp = new IO.MoveOperation(source, destination);
+                IO.LinkOperation linkOp = new IO.LinkOperation(destination, source);
+
+                moveOp.ProgressChanged += (sender, e) =>
+                {
+                    progressDialog.UpdateProgress(e.Progress);
+                };
+                moveOp.Completed += (sender, e) =>
+                {
+                    progressDialog.Invoke((Action)progressDialog.Close);
+                };
+
+                progressDialog.CancelRequested += (sender, e) =>
+                {
+                    moveOp.Cancel();
+                    linkOp.Cancel();
+                    //TODO Handle Cancellation
+                };
+
+                Task moveTask = moveOp.Run();
+
+                progressDialog.ShowDialog(this); //TODO, Check if successful
+                
+                try
+                {
+                    await moveTask;
+                }
+                catch (OperationCanceledException)
+                {
+                    progressDialog.Close();
+                    ok = false;
+                    MessageBox.Show("TODO: Handle cancellation!");
+                }
+
+                if (!ok) return;
+
+                Task linkTask = linkOp.Run();
+                try
+                {
+                    await linkTask;
+                }
+                catch (AggregateException ae)
+                {
+                    ae.Handle(e =>
+                    {
+                        if (e is TaskCanceledException)
+                        {
+                            MessageBox.Show("TODO: Handle cancellation!");
+                            return true;
+                        }
+                        return false; //TODO: Handle other exceptions
+                    });
+                }
+
+                if (checkBox1.Checked)
+                {
+                    DirectoryInfo olddir = new DirectoryInfo(source);
+                    var attrib = File.GetAttributes(source);
+                    olddir.Attributes = attrib | FileAttributes.Hidden;
+                }
+            }
+
+            //if (IOHelper.MakeLink(destination, source))
+            //{
+            //    //If told to make the link hidden
+            //    if (checkBox1.Checked)
+            //    {
+            //        DirectoryInfo olddir = new DirectoryInfo(source);
+            //        var attrib = File.GetAttributes(source);
+            //        olddir.Attributes = attrib | FileAttributes.Hidden;
+            //    }
+            //    MessageBox.Show("Done.");
+            //    //Reset(); TODO Reimplement this
+            //}
+            //else
+            //{
+            //    //Handle linking error
+            //    var result = MessageBox.Show(Properties.Resources.ErrorUnauthorizedLink, "ERROR, could not create a directory junction", MessageBoxButtons.YesNo);
+            //    if (result == DialogResult.Yes)
+            //    {
+            //        using (ProgressDialog progressDialog = new ProgressDialog("Moving back files..."))
+            //        {
+            //            IO.MoveOperation moveOp = new IO.MoveOperation(destination, source);
+
+            //            moveOp.ProgressChanged += (sender, e) =>
+            //            {
+            //                float progress = ((IO.IOOperation.ProgressChangedEventArgs)e).Progress;
+            //                progressDialog.UpdateProgress(progress);
+            //            };
+            //            moveOp.Completed += (sender, e) =>
+            //            {
+            //                progressDialog.Invoke((Action)progressDialog.Close);
+            //            };
+
+            //            progressDialog.CancelRequested += (sender, e) =>
+            //            {
+            //                moveOp.Cancel();
+            //                //TODO Handle Cancellation
+            //            };
+
+            //            Task moveTask = moveOp.Run();
+            //            progressDialog.ShowDialog(this); //TODO, Check if successful
+            //            if (!moveTask.Wait(30000))
+            //                throw new TimeoutException("Timed out waiting for moveTask to end.\nIf you see this please open an issue on https://github.com/imDema/FreeMove/issues/new");
+            //        }
+            //    }
+            //}
         }
 
         //Configure tooltips

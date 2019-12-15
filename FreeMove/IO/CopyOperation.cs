@@ -16,34 +16,18 @@ namespace FreeMove.IO
         long fileCount;
         long fileCopied = 0;
 
-        CancellationTokenSource cts;
+        CancellationTokenSource cts = new CancellationTokenSource();
         public override void Cancel() => cts.Cancel();
 
         public override Task Run()
         {
-            if (cts.IsCancellationRequested)
-            {
-                OnCancelled(new EventArgs());
-                OnFinish(new EventArgs());
-                return Task.FromCanceled(cts.Token);
-            }
-
-            OnStart(new EventArgs());
             return Task.Run(() =>
             {
-                try
-                {
-                    fileCount = Directory.GetFiles(pathFrom, "*", SearchOption.AllDirectories).Length;
-                    CopyDirectory(pathFrom, pathTo, cts.Token);
-                } catch (OperationCanceledException)
-                {
-                    OnCancelled(new EventArgs());
-                }
-                finally
-                {
-                    OnFinish(new EventArgs());
-                }
-            });
+                OnStart(new EventArgs());
+                fileCount = Directory.GetFiles(pathFrom, "*", SearchOption.AllDirectories).Length;
+                CopyDirectory(pathFrom, pathTo, cts.Token);
+                OnCompleted(new EventArgs());
+            }, cts.Token);
         }
 
         private void CopyDirectory(string dirFrom, string dirTo, CancellationToken ct)
@@ -73,8 +57,6 @@ namespace FreeMove.IO
 
         public CopyOperation(string pathFrom, string pathTo)
         {
-            cts = new CancellationTokenSource();
-
             this.pathFrom = pathFrom;
             this.pathTo = pathTo;
             sameDrive = string.Equals(Path.GetPathRoot(pathFrom), Path.GetPathRoot(pathTo), StringComparison.OrdinalIgnoreCase);
