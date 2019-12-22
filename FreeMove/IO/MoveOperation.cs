@@ -27,6 +27,7 @@ namespace FreeMove.IO
         {
             cts.Cancel();
             innerCopy?.Cancel();
+            innerCopy.Completed += (sender, e) => OnCompleted(e);
         }
 
         public override Task Run()
@@ -35,12 +36,19 @@ namespace FreeMove.IO
             innerCopy.Start += (sender, e) => OnStart(e);
 
             Task copyTask = innerCopy.Run();
+
             return copyTask.ContinueWith(t =>
             {
-                Directory.Delete(pathFrom, true);
-                OnProgressChanged(new ProgressChangedEventArgs(1.0f));
-                OnCompleted(new EventArgs());
-            }, cts.Token);
+                try
+                {
+                    Directory.Delete(pathFrom, true);
+                    OnProgressChanged(new ProgressChangedEventArgs(1.0f));
+                }
+                finally
+                {
+                    OnCompleted(new EventArgs());
+                }
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
     }
 }

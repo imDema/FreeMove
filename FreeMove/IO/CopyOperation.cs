@@ -24,9 +24,16 @@ namespace FreeMove.IO
             return Task.Run(() =>
             {
                 OnStart(new EventArgs());
-                fileCount = Directory.GetFiles(pathFrom, "*", SearchOption.AllDirectories).Length;
-                CopyDirectory(pathFrom, pathTo, cts.Token);
-                OnCompleted(new EventArgs());
+                try
+                {
+                    fileCount = Directory.GetFiles(pathFrom, "*", SearchOption.AllDirectories).Length;
+                    CopyDirectory(pathFrom, pathTo, cts.Token);
+                }
+                catch(OperationCanceledException ex)
+                {
+                    OnCompleted(new EventArgs());
+                    throw ex;
+                }
             }, cts.Token);
         }
 

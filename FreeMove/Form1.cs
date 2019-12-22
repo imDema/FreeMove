@@ -67,118 +67,78 @@ namespace FreeMove
                 return;
             }
 
-            bool ok = true;
-
             //Move files
             using (ProgressDialog progressDialog = new ProgressDialog("Moving files..."))
             {
-                IO.MoveOperation moveOp = new IO.MoveOperation(source, destination);
-                IO.LinkOperation linkOp = new IO.LinkOperation(destination, source);
+                IO.MoveOperation moveOp = IOHelper.MoveDir(source, destination);
 
-                moveOp.ProgressChanged += (sender, e) =>
-                {
-                    progressDialog.UpdateProgress(e.Progress);
-                };
-                moveOp.Completed += (sender, e) =>
-                {
-                    progressDialog.Invoke((Action)progressDialog.Close);
-                };
+                moveOp.ProgressChanged += (sender, e) => progressDialog.UpdateProgress(e.Progress);
+                moveOp.Completed += (sender, e) => progressDialog.Invoke((Action)progressDialog.Close);
 
-                progressDialog.CancelRequested += (sender, e) =>
-                {
-                    moveOp.Cancel();
-                    linkOp.Cancel();
-                    //TODO Handle Cancellation
-                };
+                progressDialog.CancelRequested += (sender, e) => moveOp.Cancel();
 
-                Task moveTask = moveOp.Run();
+                Task task = moveOp.Run()
+                    .ContinueWith(t =>
+                    {
+                        IOHelper.MakeLink(destination, source);
 
-                progressDialog.ShowDialog(this); //TODO, Check if successful
-                
+                        if (checkBox1.Checked)
+                        {
+                            DirectoryInfo olddir = new DirectoryInfo(source);
+                            var attrib = File.GetAttributes(source);
+                            olddir.Attributes = attrib | FileAttributes.Hidden;
+                        }
+                    }, TaskContinuationOptions.OnlyOnRanToCompletion);
+
+                progressDialog.ShowDialog(this);
                 try
                 {
-                    await moveTask;
+                    await task;
+                    MessageBox.Show(this, "Done!");
                 }
                 catch (OperationCanceledException)
                 {
-                    progressDialog.Close();
-                    ok = false;
-                    MessageBox.Show("TODO: Handle cancellation!");
-                }
-
-                if (!ok) return;
-
-                Task linkTask = linkOp.Run();
-                try
-                {
-                    await linkTask;
-                }
-                catch (AggregateException ae)
-                {
-                    ae.Handle(e =>
+                    try
                     {
-                        if (e is TaskCanceledException)
-                        {
-                            MessageBox.Show("TODO: Handle cancellation!");
-                            return true;
-                        }
-                        return false; //TODO: Handle other exceptions
-                    });
+                        if (Directory.Exists(source))
+                            Directory.Delete(destination, true);
+                        MessageBox.Show(this, "Cancelled!");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(this, ex.ToString(), "Error undoing changes");
+                    }
                 }
-
-                if (checkBox1.Checked)
+                catch (UnauthorizedAccessException e)
                 {
-                    DirectoryInfo olddir = new DirectoryInfo(source);
-                    var attrib = File.GetAttributes(source);
-                    olddir.Attributes = attrib | FileAttributes.Hidden;
+                    switch (MessageBox.Show(this, String.Format(Properties.Resources.ErrorUnauthorizedMoveMessage, e.Message), "Error: Unauthorized Access Exception", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2))
+                    {
+                        case DialogResult.Abort:
+                            IO.MoveOperation undoOp = IOHelper.MoveDir(destination, source);
+                            progressDialog.Cancellable = false;
+                            progressDialog.Message = "Undoing changes";
+
+                            undoOp.Completed += (__, _) => progressDialog.BeginInvoke((Action)progressDialog.Close);
+                            await undoOp.Run()
+                                .ContinueWith(t =>
+                                {
+                                    if (Directory.Exists(destination))
+                                        Directory.Delete(destination, true);
+                                }, TaskContinuationOptions.OnlyOnRanToCompletion);
+                            break;
+                        case DialogResult.Retry:
+                            MessageBox.Show(this, "TODO"); //TODO
+                            break;
+                        case DialogResult.Ignore:
+                            MessageBox.Show(this, "TODO"); //TODO
+                            break;
+                    }
+                }
+                finally
+                {
+                    progressDialog.Close();
                 }
             }
-
-            //if (IOHelper.MakeLink(destination, source))
-            //{
-            //    //If told to make the link hidden
-            //    if (checkBox1.Checked)
-            //    {
-            //        DirectoryInfo olddir = new DirectoryInfo(source);
-            //        var attrib = File.GetAttributes(source);
-            //        olddir.Attributes = attrib | FileAttributes.Hidden;
-            //    }
-            //    MessageBox.Show("Done.");
-            //    //Reset(); TODO Reimplement this
-            //}
-            //else
-            //{
-            //    //Handle linking error
-            //    var result = MessageBox.Show(Properties.Resources.ErrorUnauthorizedLink, "ERROR, could not create a directory junction", MessageBoxButtons.YesNo);
-            //    if (result == DialogResult.Yes)
-            //    {
-            //        using (ProgressDialog progressDialog = new ProgressDialog("Moving back files..."))
-            //        {
-            //            IO.MoveOperation moveOp = new IO.MoveOperation(destination, source);
-
-            //            moveOp.ProgressChanged += (sender, e) =>
-            //            {
-            //                float progress = ((IO.IOOperation.ProgressChangedEventArgs)e).Progress;
-            //                progressDialog.UpdateProgress(progress);
-            //            };
-            //            moveOp.Completed += (sender, e) =>
-            //            {
-            //                progressDialog.Invoke((Action)progressDialog.Close);
-            //            };
-
-            //            progressDialog.CancelRequested += (sender, e) =>
-            //            {
-            //                moveOp.Cancel();
-            //                //TODO Handle Cancellation
-            //            };
-
-            //            Task moveTask = moveOp.Run();
-            //            progressDialog.ShowDialog(this); //TODO, Check if successful
-            //            if (!moveTask.Wait(30000))
-            //                throw new TimeoutException("Timed out waiting for moveTask to end.\nIf you see this please open an issue on https://github.com/imDema/FreeMove/issues/new");
-            //        }
-            //    }
-            //}
         }
 
         //Configure tooltips

@@ -14,6 +14,16 @@ namespace FreeMove
 {
     public partial class ProgressDialog : Form
     {
+        private bool cancellable = true;
+        public bool Cancellable {
+            get => cancellable;
+            set
+            {
+                cancellable = value;
+                button_Cancel.Enabled = value; // WARN: could cause exception if called when button_Cancel is not intitialized!
+            }
+        }
+
         private const int BAR_RESOLUTION = 1024;
         public string Message
         {
@@ -33,24 +43,18 @@ namespace FreeMove
 
         public event EventHandler CancelRequested
         {
-            add
-            {
-                button_Cancel.Click += value;
-            }
-            remove
-            {
-                button_Cancel.Click -= value;
-            }
+            add => button_Cancel.Click += value;
+            remove => button_Cancel.Click -= value;
         }
 
         public void UpdateProgress(float progress)
         {
-            label_Progress.Invoke(new Action(() =>
+            if(IsHandleCreated)
+            label_Progress?.BeginInvoke(new Action(() =>
             {
                 label_Progress.Text = $"{progress*100f, 3:.0}%";
                 progressBar1.Value = (int)(progress * BAR_RESOLUTION + 0.5f);
             }));
-            Thread.Sleep(100);
         }
     }
 }

@@ -30,6 +30,10 @@ namespace FreeMove
         }
         #endregion
 
+        public static IO.MoveOperation MoveDir(string source, string destination)
+        {
+            return new IO.MoveOperation(source, destination);
+        }
         public static Exception[] CheckDirectories(string source, string destination, bool safeMode)
         {
             List<Exception> exceptions = new List<Exception>();
