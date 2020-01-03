@@ -52,7 +52,7 @@ namespace FreeMove
             if(IsHandleCreated)
             label_Progress?.BeginInvoke(new Action(() =>
             {
-                label_Progress.Text = $"{progress*100f, 3:.0}%";
+                label_Progress.Text = $"{progress*100f, 3:0.0}%";
                 progressBar1.Value = (int)(progress * BAR_RESOLUTION + 0.5f);
             }));
         }

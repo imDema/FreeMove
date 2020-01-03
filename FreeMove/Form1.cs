@@ -143,7 +143,10 @@ namespace FreeMove
                 progressDialog.CancelRequested += (sender, e) =>
                 {
                     if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to cancel?", "Cancel confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2))
+                    {
                         moveOp.Cancel();
+                        progressDialog.BeginInvoke(new Action(() =>  progressDialog.Cancellable = false));
+                    }
                 };
 
                 Task task = moveOp.Run();
