@@ -47,13 +47,8 @@ namespace FreeMove
 
         #endregion
 
-        private async void Begin()
+        private bool PreliminaryCheck(string source, string destination)
         {
-            //Get the original and the new path from the textboxes
-            string source, destination;
-            source = textBox_From.Text.TrimEnd('\\');
-            destination = Path.Combine(textBox_To.Text.Length > 3 ? textBox_To.Text.TrimEnd('\\') : textBox_To.Text, Path.GetFileName(source));
-
             //Check for errors before copying
             var exceptions = IOHelper.CheckDirectories(source, destination, safeMode);
             if (exceptions.Length > 0)
@@ -64,9 +59,79 @@ namespace FreeMove
                     msg += "- " + ex.Message + "\n";
                 }
                 MessageBox.Show(msg, "Error");
-                return;
+                return false;
             }
+            return true;
+        }
 
+        private async void Begin()
+        {
+            string source = textBox_From.Text.TrimEnd('\\');
+            string destination = Path.Combine(textBox_To.Text.Length > 3 ? textBox_To.Text.TrimEnd('\\') : textBox_To.Text, Path.GetFileName(source));
+
+            if (PreliminaryCheck(source, destination))
+            {
+                try
+                {
+                    await BeginMove(source, destination);
+                    Symlink(destination, source);
+
+                    if (checkBox1.Checked)
+                    {
+                        DirectoryInfo olddir = new DirectoryInfo(source);
+                        var attrib = File.GetAttributes(source);
+                        olddir.Attributes = attrib | FileAttributes.Hidden;
+                    }
+
+                    MessageBox.Show(this, "Done!");
+                }
+                catch (IO.MoveOperation.CopyFailedException ex)
+                {
+                    switch (MessageBox.Show(this, string.Format($"Do you want to undo the changes?\n\nDetails:\n{ex.InnerException.Message}"), ex.Message, MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2))
+                    {
+                        case DialogResult.Yes:
+                            try
+                            {
+                                Directory.Delete(destination, true);
+                            }
+                            catch (Exception ie)
+                            {
+                                MessageBox.Show(this, ie.Message, "Could not remove copied contents. Try removing manually");
+                            }
+                            break;
+                        case DialogResult.No:
+                            // MessageBox.Show(this, ie.Message, "Could not remove copied contents. Try removing manually");
+                            break;
+                    }
+                }
+                catch (IO.MoveOperation.DeleteFailedException ex)
+                {
+                    switch (MessageBox.Show(this, string.Format($"Do you want to undo the changes?\n\nDetails:\n{ex.InnerException.Message}"), ex.Message, MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2))
+                    {
+                        case DialogResult.Yes:
+                            try
+                            {
+                                await BeginMove(destination, source);
+                            }
+                            catch (Exception ie)
+                            {
+                                MessageBox.Show(this, ie.Message, "Could not move back contents. Try moving manually");
+                            }
+                            break;
+                        case DialogResult.No:
+                            // MessageBox.Show(this, ie.Message, "Could not remove copied contents. Try removing manually");
+                            break;
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    MessageBox.Show(this, "Cancelled!");
+                }
+            }
+        }
+
+        private async Task BeginMove(string source, string destination)
+        {
             //Move files
             using (ProgressDialog progressDialog = new ProgressDialog("Moving files..."))
             {
@@ -77,68 +142,23 @@ namespace FreeMove
 
                 progressDialog.CancelRequested += (sender, e) => moveOp.Cancel();
 
-                Task task = moveOp.Run()
-                    .ContinueWith(t =>
-                    {
-                        IOHelper.MakeLink(destination, source);
-
-                        if (checkBox1.Checked)
-                        {
-                            DirectoryInfo olddir = new DirectoryInfo(source);
-                            var attrib = File.GetAttributes(source);
-                            olddir.Attributes = attrib | FileAttributes.Hidden;
-                        }
-                    }, TaskContinuationOptions.OnlyOnRanToCompletion);
+                Task task = moveOp.Run();
 
                 progressDialog.ShowDialog(this);
                 try
                 {
                     await task;
-                    MessageBox.Show(this, "Done!");
-                }
-                catch (OperationCanceledException)
-                {
-                    try
-                    {
-                        if (Directory.Exists(source))
-                            Directory.Delete(destination, true);
-                        MessageBox.Show(this, "Cancelled!");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(this, ex.ToString(), "Error undoing changes");
-                    }
-                }
-                catch (UnauthorizedAccessException e)
-                {
-                    switch (MessageBox.Show(this, String.Format(Properties.Resources.ErrorUnauthorizedMoveMessage, e.Message), "Error: Unauthorized Access Exception", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2))
-                    {
-                        case DialogResult.Abort:
-                            IO.MoveOperation undoOp = IOHelper.MoveDir(destination, source);
-                            progressDialog.Cancellable = false;
-                            progressDialog.Message = "Undoing changes";
-
-                            undoOp.Completed += (__, _) => progressDialog.BeginInvoke((Action)progressDialog.Close);
-                            await undoOp.Run()
-                                .ContinueWith(t =>
-                                {
-                                    if (Directory.Exists(destination))
-                                        Directory.Delete(destination, true);
-                                }, TaskContinuationOptions.OnlyOnRanToCompletion);
-                            break;
-                        case DialogResult.Retry:
-                            MessageBox.Show(this, "TODO"); //TODO
-                            break;
-                        case DialogResult.Ignore:
-                            MessageBox.Show(this, "TODO"); //TODO
-                            break;
-                    }
                 }
                 finally
                 {
                     progressDialog.Close();
                 }
             }
+        }
+
+        private void Symlink(string destination, string link)
+        {
+            IOHelper.MakeLink(destination, link);
         }
 
         //Configure tooltips
@@ -169,6 +189,7 @@ namespace FreeMove
         }
 
         #region Event Handlers
+
         private void Button_Move_Click(object sender, EventArgs e)
         {
             Begin();

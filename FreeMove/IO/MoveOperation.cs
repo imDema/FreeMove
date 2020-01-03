@@ -37,18 +37,38 @@ namespace FreeMove.IO
 
             Task copyTask = innerCopy.Run();
 
-            return copyTask.ContinueWith(t =>
+            Task deleteTask = copyTask.ContinueWith(t =>
             {
                 try
                 {
                     Directory.Delete(pathFrom, true);
                     OnProgressChanged(new ProgressChangedEventArgs(1.0f));
                 }
-                finally
+                catch (Exception e)
                 {
-                    OnCompleted(new EventArgs());
+                    throw new DeleteFailedException("Exception encountered while removing duplicate files in the old location", e);
                 }
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
+
+
+            Task faultedTask = copyTask.ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                    throw new CopyFailedException("Exception encountered while copying directory", t.Exception);
+                else if (t.IsCanceled)
+                    throw new OperationCanceledException();
+
+            }, TaskContinuationOptions.NotOnRanToCompletion);
+
+            return Task.WhenAny(new Task[] { deleteTask, faultedTask });
+        }
+        public class CopyFailedException : Exception
+        {
+            public CopyFailedException(string message, Exception innerException) : base(message, innerException) { }
+        }
+        public class DeleteFailedException : Exception
+        {
+            public DeleteFailedException(string message, Exception innerException) : base(message, innerException) { }
         }
     }
 }
