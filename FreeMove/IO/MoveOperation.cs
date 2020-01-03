@@ -27,18 +27,24 @@ namespace FreeMove.IO
         {
             cts.Cancel();
             innerCopy?.Cancel();
-            innerCopy.Completed += (sender, e) => OnCompleted(e);
         }
 
-        public override Task Run()
+        public override async Task Run()
         {
             innerCopy.ProgressChanged += (sender, e) => OnProgressChanged(new ProgressChangedEventArgs(e.Progress * 0.99f));
             innerCopy.Start += (sender, e) => OnStart(e);
-
-            Task copyTask = innerCopy.Run();
-
-            Task deleteTask = copyTask.ContinueWith(t =>
+            try
             {
+                try
+                {
+                    await innerCopy.Run();
+                }
+                catch (Exception e) when (!(e is OperationCanceledException)) // Wrap inner exceptions to signal which phase failed
+                {
+                    throw new CopyFailedException("Exception encountered while copying directory", e);
+                }
+
+                cts.Token.ThrowIfCancellationRequested();
                 try
                 {
                     Directory.Delete(pathFrom, true);
@@ -48,19 +54,11 @@ namespace FreeMove.IO
                 {
                     throw new DeleteFailedException("Exception encountered while removing duplicate files in the old location", e);
                 }
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
-
-
-            Task faultedTask = copyTask.ContinueWith(t =>
+            }
+            finally
             {
-                if (t.IsFaulted)
-                    throw new CopyFailedException("Exception encountered while copying directory", t.Exception);
-                else if (t.IsCanceled)
-                    throw new OperationCanceledException();
-
-            }, TaskContinuationOptions.NotOnRanToCompletion);
-
-            return Task.WhenAny(new Task[] { deleteTask, faultedTask });
+                OnEnd(new EventArgs());
+            }
         }
         public class CopyFailedException : Exception
         {

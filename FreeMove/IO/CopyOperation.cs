@@ -19,22 +19,19 @@ namespace FreeMove.IO
         CancellationTokenSource cts = new CancellationTokenSource();
         public override void Cancel() => cts.Cancel();
 
-        public override Task Run()
+        public override async Task Run()
         {
-            return Task.Run(() =>
+            OnStart(new EventArgs());
+
+            try
             {
-                OnStart(new EventArgs());
-                try
-                {
-                    fileCount = Directory.GetFiles(pathFrom, "*", SearchOption.AllDirectories).Length;
-                    CopyDirectory(pathFrom, pathTo, cts.Token);
-                }
-                catch(OperationCanceledException ex)
-                {
-                    OnCompleted(new EventArgs());
-                    throw ex;
-                }
-            }, cts.Token);
+                fileCount = Directory.GetFiles(pathFrom, "*", SearchOption.AllDirectories).Length;
+                await Task.Run(() => CopyDirectory(pathFrom, pathTo, cts.Token), cts.Token);
+            }
+            finally
+            {
+                OnEnd(new EventArgs());
+            }
         }
 
         private void CopyDirectory(string dirFrom, string dirTo, CancellationToken ct)

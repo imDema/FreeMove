@@ -11,12 +11,11 @@ namespace FreeMove.IO
     {
         public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
         public event EventHandler Start;
-        public event EventHandler Completed;
-        public event EventHandler Cancelled;
+        public event EventHandler End;
 
         protected virtual void OnProgressChanged(ProgressChangedEventArgs e) => ProgressChanged?.Invoke(this, e);
         protected virtual void OnStart(EventArgs e) => Start?.Invoke(this, e);
-        protected virtual void OnCompleted(EventArgs e) => Completed?.Invoke(this, e);
+        protected virtual void OnEnd(EventArgs e) => End?.Invoke(this, e);
 
         /// <summary>
         /// Stop task as soon as it's safe to do so

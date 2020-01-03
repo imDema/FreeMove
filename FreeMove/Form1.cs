@@ -87,7 +87,7 @@ namespace FreeMove
                 }
                 catch (IO.MoveOperation.CopyFailedException ex)
                 {
-                    switch (MessageBox.Show(this, string.Format($"Do you want to undo the changes?\n\nDetails:\n{ex.InnerException.Message}"), ex.Message, MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2))
+                    switch (MessageBox.Show(this, string.Format($"Do you want to undo the changes?\n\nDetails:\n{ex.InnerException.Message}"), ex.Message, MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1))
                     {
                         case DialogResult.Yes:
                             try
@@ -106,7 +106,7 @@ namespace FreeMove
                 }
                 catch (IO.MoveOperation.DeleteFailedException ex)
                 {
-                    switch (MessageBox.Show(this, string.Format($"Do you want to undo the changes?\n\nDetails:\n{ex.InnerException.Message}"), ex.Message, MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2))
+                    switch (MessageBox.Show(this, string.Format($"Do you want to undo the changes?\n\nDetails:\n{ex.InnerException.Message}"), ex.Message, MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1))
                     {
                         case DialogResult.Yes:
                             try
@@ -138,9 +138,13 @@ namespace FreeMove
                 IO.MoveOperation moveOp = IOHelper.MoveDir(source, destination);
 
                 moveOp.ProgressChanged += (sender, e) => progressDialog.UpdateProgress(e.Progress);
-                moveOp.Completed += (sender, e) => progressDialog.Invoke((Action)progressDialog.Close);
+                moveOp.End += (sender, e) => progressDialog.Invoke((Action)progressDialog.Close);
 
-                progressDialog.CancelRequested += (sender, e) => moveOp.Cancel();
+                progressDialog.CancelRequested += (sender, e) =>
+                {
+                    if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to cancel?", "Cancel confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2))
+                        moveOp.Cancel();
+                };
 
                 Task task = moveOp.Run();
 
