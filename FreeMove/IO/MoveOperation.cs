@@ -28,7 +28,7 @@ namespace FreeMove.IO
     {
         string pathFrom;
         string pathTo;
-        bool sameDrive; //TODO: use System.IO.Move if the files are on the same drive
+        bool sameDrive;
         CancellationTokenSource cts = new CancellationTokenSource();
         CopyOperation innerCopy;
 

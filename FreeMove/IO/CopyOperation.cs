@@ -28,7 +28,6 @@ namespace FreeMove.IO
     {
         string pathFrom;
         string pathTo;
-        bool sameDrive; //TODO: use System.IO.Copy if the files are on the same drive
         long fileCount;
         long fileCopied = 0;
 
@@ -82,7 +81,6 @@ namespace FreeMove.IO
         {
             this.pathFrom = pathFrom;
             this.pathTo = pathTo;
-            sameDrive = string.Equals(Path.GetPathRoot(pathFrom), Path.GetPathRoot(pathTo), StringComparison.OrdinalIgnoreCase);
         }
     }
 }

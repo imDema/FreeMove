@@ -146,7 +146,20 @@ namespace FreeMove
                 }
                 catch (OperationCanceledException)
                 {
-                    MessageBox.Show(this, "Cancelled!");
+                    switch (MessageBox.Show(this, string.Format($"Do you want to undo the changes?"), "Cancelled", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1))
+                    {
+                        case DialogResult.Yes:
+                            try
+                            {
+                                if (Directory.Exists(destination))
+                                    Directory.Delete(destination, true);
+                            }
+                            catch (Exception ie)
+                            {
+                                MessageBox.Show(this, ie.Message, "Could not remove copied contents. Try removing manually");
+                            }
+                            break;
+                    }
                 }
             }
             Enabled = true;
