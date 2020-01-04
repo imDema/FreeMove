@@ -61,12 +61,17 @@ namespace FreeMove.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ImDema/FreeMove {0}
+        ///   Looks up a localized string similar to imDema/FreeMove {0} -- Move directories without breaking shortcuts or installations 
+        ///Copyright(C) 2020  Luca De Martini
         ///
-        ///This program is licensed under the GNU General Public License v3.0
-        ///For more informations https://github.com/imDema/FreeMove/blob/master/LICENSE.txt 
+        ///This program is free software: you can redistribute it and/or modify
+        ///it under the terms of the GNU General Public License as published by
+        ///the Free Software Foundation, either version 3 of the License, or
+        ///(at your option) any later version.
         ///
-        ///https://github.com/imDema.
+        ///This program is distributed in the hope that it will be useful,
+        ///but WITHOUT ANY WARRANTY; without even the implied warranty of
+        ///MERCHANTABILI [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AboutContent {
             get {

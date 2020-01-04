@@ -19,7 +19,7 @@ You can use this tool to move programs that install on C:\ by default to another
 
 Run the executable and use the GUI
 
-Depending on your Windows version the program could need to be run as administrator
+> Note: this program requires administrator privileges for its core functionality
 
 ## Recommendations
 You should not move important system directories as they can break core functionalities like Windows Update and Windows Store Apps.
@@ -32,7 +32,7 @@ That said, moving directories contained in the previously mentioned directories 
 ![Screenshot](http://i.imgur.com/fW6ZEg3.png)
 
 ## Uninstalling moved programs
-Uninstall the program just as you would normally without deleting the junction. The uninstaller will work normally leaving an empty directory in the location you moved the program to, and the directory link in the original location, both of which you can delete manually
+Uninstall the program just as you would normally without deleting the junction. The uninstaller will work normally leaving an empty directory in the location you moved the program to, and the directory link in the original location, both of which you can then delete manually
 
 ## Moving back a program
 Delete the junction in the old location (this won't delete the content) and move the directory back to its original position
