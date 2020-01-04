@@ -56,7 +56,7 @@ namespace FreeMove
                 var msg = "";
                 foreach (var ex in exceptions)
                 {
-                    msg += "- " + ex.Message + "\n";
+                    msg += ex.Message + "\n";
                 }
                 MessageBox.Show(msg, "Error");
                 return false;
@@ -66,6 +66,7 @@ namespace FreeMove
 
         private async void Begin()
         {
+            Enabled = false;
             string source = textBox_From.Text.TrimEnd('\\');
             string destination = Path.Combine(textBox_To.Text.Length > 3 ? textBox_To.Text.TrimEnd('\\') : textBox_To.Text, Path.GetFileName(source));
 
@@ -128,6 +129,7 @@ namespace FreeMove
                     MessageBox.Show(this, "Cancelled!");
                 }
             }
+            Enabled = true;
         }
 
         private async Task BeginMove(string source, string destination)
@@ -137,7 +139,7 @@ namespace FreeMove
             {
                 IO.MoveOperation moveOp = IOHelper.MoveDir(source, destination);
 
-                moveOp.ProgressChanged += (sender, e) => progressDialog.UpdateProgress(e.Progress);
+                moveOp.ProgressChanged += (sender, e) => progressDialog.UpdateProgress(e);
                 moveOp.End += (sender, e) => progressDialog.Invoke((Action)progressDialog.Close);
 
                 progressDialog.CancelRequested += (sender, e) =>

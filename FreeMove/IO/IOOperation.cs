@@ -29,11 +29,14 @@ namespace FreeMove.IO
 
         public class ProgressChangedEventArgs : EventArgs
         {
-            public float Progress { get => progress; }
-            float progress;
-            public ProgressChangedEventArgs(float progress)
+            public long Progress { get => progress; }
+            public long Max { get => max; }
+            long progress;
+            long max;
+            public ProgressChangedEventArgs(long progress, long max)
             {
                 this.progress = progress;
+                this.max = max;
             }
         }
     }

@@ -31,7 +31,7 @@ namespace FreeMove.IO
 
         public override async Task Run()
         {
-            innerCopy.ProgressChanged += (sender, e) => OnProgressChanged(new ProgressChangedEventArgs(e.Progress * 0.99f));
+            innerCopy.ProgressChanged += (sender, e) => OnProgressChanged(e);
             innerCopy.Start += (sender, e) => OnStart(e);
             try
             {
@@ -48,7 +48,6 @@ namespace FreeMove.IO
                 try
                 {
                     Directory.Delete(pathFrom, true);
-                    OnProgressChanged(new ProgressChangedEventArgs(1.0f));
                 }
                 catch (Exception e)
                 {

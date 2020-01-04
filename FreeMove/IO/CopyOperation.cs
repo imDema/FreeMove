@@ -26,6 +26,7 @@ namespace FreeMove.IO
             try
             {
                 fileCount = Directory.GetFiles(pathFrom, "*", SearchOption.AllDirectories).Length;
+                OnProgressChanged(new ProgressChangedEventArgs(0, fileCount));
                 await Task.Run(() => CopyDirectory(pathFrom, pathTo, cts.Token), cts.Token);
             }
             finally
@@ -48,7 +49,7 @@ namespace FreeMove.IO
                 string dest = Path.Combine(dirTo, name);
                 if (!File.Exists(dest))
                     File.Copy(file, dest);
-                OnProgressChanged(new ProgressChangedEventArgs((float)fileCopied++ / fileCount));
+                OnProgressChanged(new ProgressChangedEventArgs(++fileCopied, fileCount));
             }
             string[] folders = Directory.GetDirectories(dirFrom);
             foreach (string folder in folders)
