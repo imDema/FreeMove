@@ -5,8 +5,6 @@ Move directories freely without breaking installations or shortcuts
 
 You can use this tool to move programs that install on C:\ by default to another drive to save space on your main drive
 
-> NOTE: Currently rewriting a lot of old code to make the codebase more robust and maintainable
-
 ### How It works
 1. The files are moved to the new location
 2. A [symbolic link](https://www.wikiwand.com/en/NTFS_junction_point) is created from the old location redirecting to the new one. Any program trying to access a file in the old location will automatically be redirected to its new location
@@ -21,7 +19,7 @@ You can use this tool to move programs that install on C:\ by default to another
 
 Run the executable and use the GUI
 
-Depending on your Windows version the program could need to be run as administrator
+> Note: this program requires administrator privileges for its core functionality
 
 ## Recommendations
 You should not move important system directories as they can break core functionalities like Windows Update and Windows Store Apps.
@@ -34,7 +32,7 @@ That said, moving directories contained in the previously mentioned directories 
 ![Screenshot](http://i.imgur.com/fW6ZEg3.png)
 
 ## Uninstalling moved programs
-Uninstall the program just as you would normally without deleting the junction. The uninstaller will work normally leaving an empty directory in the location you moved the program to, and the directory link in the original location, both of which you can delete manually
+Uninstall the program just as you would normally without deleting the junction. The uninstaller will work normally leaving an empty directory in the location you moved the program to, and the directory link in the original location, both of which you can then delete manually
 
 ## Moving back a program
 Delete the junction in the old location (this won't delete the content) and move the directory back to its original position

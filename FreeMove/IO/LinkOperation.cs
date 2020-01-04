@@ -17,22 +17,34 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace FreeMove
+namespace FreeMove.IO
 {
-    static class Program
+    class LinkOperation : IOOperation
     {
-        /// <summary>
-        /// Punto di ingresso principale dell'applicazione.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        readonly string directory;
+        readonly string symlink;
+        CancellationTokenSource cts = new CancellationTokenSource();
+        public override void Cancel()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            cts.Cancel();
+        }
+
+        public override Task Run()
+        {
+            return Task.Run(() =>
+            {
+                return IOHelper.MakeLink(directory, symlink);
+            }, cts.Token);
+        }
+
+        public LinkOperation(string directory, string symlink)
+        {
+            this.directory = directory;
+            this.symlink = symlink;
         }
     }
 }

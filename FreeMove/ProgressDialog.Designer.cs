@@ -1,6 +1,22 @@
-﻿namespace FreeMove
+﻿// FreeMove -- Move directories without breaking shortcuts or installations 
+//    Copyright(C) 2020  Luca De Martini
+
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+//    GNU General Public License for more details.
+
+//    You should have received a copy of the GNU General Public License
+//    along with this program.If not, see<http://www.gnu.org/licenses/>.
+
+namespace FreeMove
 {
-    partial class MoveDialog
+    partial class ProgressDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -31,6 +47,7 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label_Message = new System.Windows.Forms.Label();
             this.label_Progress = new System.Windows.Forms.Label();
+            this.button_Cancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // progressBar1
@@ -60,12 +77,22 @@
             this.label_Progress.Text = "123/321";
             this.label_Progress.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // button_Cancel
+            // 
+            this.button_Cancel.Location = new System.Drawing.Point(197, 64);
+            this.button_Cancel.Name = "button_Cancel";
+            this.button_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.button_Cancel.TabIndex = 3;
+            this.button_Cancel.Text = "Cancel";
+            this.button_Cancel.UseVisualStyleBackColor = true;
+            // 
             // MoveDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 70);
+            this.ClientSize = new System.Drawing.Size(284, 94);
             this.ControlBox = false;
+            this.Controls.Add(this.button_Cancel);
             this.Controls.Add(this.label_Progress);
             this.Controls.Add(this.label_Message);
             this.Controls.Add(this.progressBar1);
@@ -86,5 +113,6 @@
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label label_Message;
         private System.Windows.Forms.Label label_Progress;
+        private System.Windows.Forms.Button button_Cancel;
     }
 }
