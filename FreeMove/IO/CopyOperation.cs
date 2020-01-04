@@ -41,6 +41,7 @@ namespace FreeMove.IO
                 Directory.CreateDirectory(dirTo);
             string[] files = Directory.GetFiles(dirFrom);
             foreach (string file in files)
+            // Parallel.ForEach(files, file =>
             {
                 if (ct.IsCancellationRequested)
                     ct.ThrowIfCancellationRequested();
@@ -50,14 +51,15 @@ namespace FreeMove.IO
                 if (!File.Exists(dest))
                     File.Copy(file, dest);
                 OnProgressChanged(new ProgressChangedEventArgs(++fileCopied, fileCount));
-            }
+            }// );
             string[] folders = Directory.GetDirectories(dirFrom);
             foreach (string folder in folders)
+            // Parallel.ForEach(folders, folder =>
             {
                 string name = Path.GetFileName(folder);
                 string dest = Path.Combine(dirTo, name);
                 CopyDirectory(folder, dest, ct);
-            }
+            }// );
         }
 
         public CopyOperation(string pathFrom, string pathTo)

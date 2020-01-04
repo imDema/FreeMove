@@ -124,6 +124,10 @@ namespace FreeMove
                             break;
                     }
                 }
+                catch (IO.MoveOperation.MoveFailedException ex)
+                {
+                    MessageBox.Show(this, string.Format($"Details:\n{ex.InnerException.Message}"), ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 catch (OperationCanceledException)
                 {
                     MessageBox.Show(this, "Cancelled!");
