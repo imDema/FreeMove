@@ -50,7 +50,7 @@ namespace FreeMove
         {
             return new IO.MoveOperation(source, destination);
         }
-        public static Exception[] CheckDirectories(string source, string destination, bool safeMode)
+        public static void CheckDirectories(string source, string destination, bool safeMode)
         {
             List<Exception> exceptions = new List<Exception>();
             //Check for correct file path format
@@ -106,7 +106,7 @@ namespace FreeMove
 
             // Next checks rely on the previous so if there was any exception return
             if (exceptions.Count > 0)
-                return exceptions.ToArray();
+                throw new AggregateException(exceptions);
 
             //Check admin privileges
             string TestFile = Path.Combine(Path.GetDirectoryName(source), "deleteme");
@@ -144,7 +144,7 @@ namespace FreeMove
 
             // Next checks rely on the previous so if there was any exception return
             if (exceptions.Count > 0)
-                return exceptions.ToArray();
+                throw new AggregateException(exceptions);
 
             long size = 0;
             DirectoryInfo dirInf = new DirectoryInfo(source);
@@ -156,29 +156,14 @@ namespace FreeMove
             if (dstDrive.AvailableFreeSpace < size)
                 exceptions.Add(new Exception($"There is not enough free space on the {dstDrive.Name} disk. {size / 1000000}MB required, {dstDrive.AvailableFreeSpace / 1000000} available."));
 
+            if (exceptions.Count > 0)
+                throw new AggregateException(exceptions);
+
             //If set to do full check try to open for write all files
             if (Settings.PermCheck)
             {
-                try
-                {
-                    Parallel.ForEach(Directory.GetFiles(source), file =>
-                    {
-                        CheckFile(file);
-                    });
-                    Parallel.ForEach(Directory.GetDirectories(source), dir =>
-                    {
-                        Parallel.ForEach(Directory.GetFiles(dir), file =>
-                        {
-                            CheckFile(file);
-                        });
-                    });
-                }
-                catch (Exception ex)
-                {
-                    exceptions.Add(ex);
-                }
-
-                void CheckFile(string file)
+                var exceptionBag = new System.Collections.Concurrent.ConcurrentBag<Exception>();
+                Action<string> CheckFile = (file) =>
                 {
                     FileInfo fi = new FileInfo(file);
                     FileStream fs = null;
@@ -188,16 +173,20 @@ namespace FreeMove
                     }
                     catch (Exception ex)
                     {
-                        exceptions.Add(ex);
+                        exceptionBag.Add(ex);
                     }
                     finally
                     {
                         if (fs != null)
                             fs.Dispose();
                     }
-                }
+                };
+
+                Parallel.ForEach(Directory.GetFiles(source, "*", SearchOption.AllDirectories), CheckFile);
+                exceptions.AddRange(exceptionBag);
             }
-            return exceptions.ToArray();
+            if (exceptions.Count > 0)
+                throw new AggregateException(exceptions);
         }
     }
 }

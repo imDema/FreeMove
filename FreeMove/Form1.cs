@@ -66,11 +66,14 @@ namespace FreeMove
         private bool PreliminaryCheck(string source, string destination)
         {
             //Check for errors before copying
-            var exceptions = IOHelper.CheckDirectories(source, destination, safeMode);
-            if (exceptions.Length > 0)
+            try
+            {
+                IOHelper.CheckDirectories(source, destination, safeMode);
+            }
+            catch(AggregateException ae)
             {
                 var msg = "";
-                foreach (var ex in exceptions)
+                foreach (var ex in ae.InnerExceptions)
                 {
                     msg += ex.Message + "\n";
                 }
