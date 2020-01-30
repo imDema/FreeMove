@@ -61,14 +61,14 @@ namespace FreeMove
             this.checkNowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkOnProgramStartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PermissionCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fullToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.safeModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportAnIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gitHubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fullToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -213,6 +213,32 @@ namespace FreeMove
             this.PermissionCheckToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.PermissionCheckToolStripMenuItem.Text = "Permission check";
             // 
+            // noneToolStripMenuItem
+            // 
+            this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
+            this.noneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.noneToolStripMenuItem.Text = "None";
+            this.noneToolStripMenuItem.ToolTipText = "Don\'t check any file before moving";
+            this.noneToolStripMenuItem.Click += new System.EventHandler(this.NoneToolStripMenuItem_Click);
+            // 
+            // fastToolStripMenuItem
+            // 
+            this.fastToolStripMenuItem.Checked = true;
+            this.fastToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.fastToolStripMenuItem.Name = "fastToolStripMenuItem";
+            this.fastToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fastToolStripMenuItem.Text = "Fast";
+            this.fastToolStripMenuItem.ToolTipText = "Check all .exe and .dll files before moving";
+            this.fastToolStripMenuItem.Click += new System.EventHandler(this.FastToolStripMenuItem_Click);
+            // 
+            // fullToolStripMenuItem
+            // 
+            this.fullToolStripMenuItem.Name = "fullToolStripMenuItem";
+            this.fullToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fullToolStripMenuItem.Text = "Full";
+            this.fullToolStripMenuItem.ToolTipText = "Check all files before moving";
+            this.fullToolStripMenuItem.Click += new System.EventHandler(this.FullToolStripMenuItem_Click);
+            // 
             // safeModeToolStripMenuItem
             // 
             this.safeModeToolStripMenuItem.Checked = true;
@@ -253,29 +279,6 @@ namespace FreeMove
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
-            // 
-            // noneToolStripMenuItem
-            // 
-            this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-            this.noneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.noneToolStripMenuItem.Text = "None";
-            this.noneToolStripMenuItem.Click += new System.EventHandler(this.NoneToolStripMenuItem_Click);
-            // 
-            // fastToolStripMenuItem
-            // 
-            this.fastToolStripMenuItem.Checked = true;
-            this.fastToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.fastToolStripMenuItem.Name = "fastToolStripMenuItem";
-            this.fastToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.fastToolStripMenuItem.Text = "Fast";
-            this.fastToolStripMenuItem.Click += new System.EventHandler(this.FastToolStripMenuItem_Click);
-            // 
-            // fullToolStripMenuItem
-            // 
-            this.fullToolStripMenuItem.Name = "fullToolStripMenuItem";
-            this.fullToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.fullToolStripMenuItem.Text = "Full";
-            this.fullToolStripMenuItem.Click += new System.EventHandler(this.FullToolStripMenuItem_Click);
             // 
             // Form1
             // 
