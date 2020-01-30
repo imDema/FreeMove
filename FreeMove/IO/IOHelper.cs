@@ -160,7 +160,7 @@ namespace FreeMove
                 throw new AggregateException(exceptions);
 
             //If set to do full check try to open for write all files
-            if (Settings.PermCheck)
+            if (Settings.PermCheck != Settings.PermissionCheckLevel.None)
             {
                 var exceptionBag = new System.Collections.Concurrent.ConcurrentBag<Exception>();
                 Action<string> CheckFile = (file) =>
@@ -181,8 +181,15 @@ namespace FreeMove
                             fs.Dispose();
                     }
                 };
+                if (Settings.PermCheck == Settings.PermissionCheckLevel.Fast)
+                {
+                    Parallel.ForEach(Directory.GetFiles(source, "*.exe", SearchOption.AllDirectories), CheckFile);
+                    Parallel.ForEach(Directory.GetFiles(source, "*.dll", SearchOption.AllDirectories), CheckFile);
+                } else
+                {
+                    Parallel.ForEach(Directory.GetFiles(source, "*", SearchOption.AllDirectories), CheckFile);
+                }
 
-                Parallel.ForEach(Directory.GetFiles(source, "*", SearchOption.AllDirectories), CheckFile);
                 exceptions.AddRange(exceptionBag);
             }
             if (exceptions.Count > 0)

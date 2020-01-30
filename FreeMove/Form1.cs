@@ -55,9 +55,23 @@ namespace FreeMove
                 //If there is an update show the update dialog
                 if (updater != null) updater.ShowDialog();
             }
-            if (Settings.PermCheck)
+            switch(Settings.PermCheck)
             {
-                PermissionCheckToolStripMenuItem.Checked = true;
+                case Settings.PermissionCheckLevel.None:
+                    noneToolStripMenuItem.Checked = true;
+                    fastToolStripMenuItem.Checked = false;
+                    fullToolStripMenuItem.Checked = false;
+                    break;
+                case Settings.PermissionCheckLevel.Fast:
+                    noneToolStripMenuItem.Checked = false;
+                    fastToolStripMenuItem.Checked = true;
+                    fullToolStripMenuItem.Checked = false;
+                    break;
+                case Settings.PermissionCheckLevel.Full:
+                    noneToolStripMenuItem.Checked = false;
+                    fastToolStripMenuItem.Checked = false;
+                    fullToolStripMenuItem.Checked = true;
+                    break;
             }
         }
 
@@ -225,7 +239,7 @@ namespace FreeMove
         {
             textBox_From.Text = "";
             textBox_To.Text = "";
-            textBox_From.Focus();
+            textBox_From.Focus();   
         }
 
         public static void Unauthorized(Exception ex)
@@ -296,8 +310,8 @@ namespace FreeMove
         //Set to check updates on program start
         private void CheckOnProgramStartToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Settings.ToggleAutoUpdate();
-            checkOnProgramStartToolStripMenuItem.Checked = Settings.AutoUpdate;
+            checkOnProgramStartToolStripMenuItem.Checked = !checkOnProgramStartToolStripMenuItem.Checked;
+            Settings.AutoUpdate = checkOnProgramStartToolStripMenuItem.Checked;
         }
         #endregion
 
@@ -305,12 +319,6 @@ namespace FreeMove
         {
             string msg = String.Format(Properties.Resources.AboutContent, System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion);
             MessageBox.Show(msg, "About FreeMove");
-        }
-
-        private void FullPermissionCheckToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.TogglePermCheck();
-            PermissionCheckToolStripMenuItem.Checked = Settings.PermCheck;
         }
 
         private void SafeModeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -321,6 +329,30 @@ namespace FreeMove
                 safeModeToolStripMenuItem.Checked = false;
                 safeModeToolStripMenuItem.Enabled = false;
             }
+        }
+
+        private void NoneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings.PermCheck = Settings.PermissionCheckLevel.None;
+            noneToolStripMenuItem.Checked = true;
+            fastToolStripMenuItem.Checked = false;
+            fullToolStripMenuItem.Checked = false;
+        }
+
+        private void FastToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings.PermCheck = Settings.PermissionCheckLevel.Fast;
+            noneToolStripMenuItem.Checked = false;
+            fastToolStripMenuItem.Checked = true;
+            fullToolStripMenuItem.Checked = false;
+        }
+
+        private void FullToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings.PermCheck = Settings.PermissionCheckLevel.Full;
+            noneToolStripMenuItem.Checked = false;
+            fastToolStripMenuItem.Checked = false;
+            fullToolStripMenuItem.Checked = true;
         }
     }
 }

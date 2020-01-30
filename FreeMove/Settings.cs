@@ -28,26 +28,44 @@ namespace FreeMove
     [Serializable]
     public class Settings
     {
+        public enum PermissionCheckLevel
+        {
+            None,
+            Fast,
+            Full
+        }
         //Values
-        public bool AutomaticUpdate = false;
+        public bool AutomaticUpdate = true;
 
-        public bool PermissionCheck = true;
+        public PermissionCheckLevel PermissionCheck = PermissionCheckLevel.Fast;
 
         public static bool AutoUpdate
         {
+            set
+            {
+                var LSett = Load();
+                LSett.AutomaticUpdate = value;
+                Save(LSett);
+            }
             get
             {
                 var LSett = Load();
-                return LSett != null ? LSett.AutomaticUpdate : false;
+                return LSett.AutomaticUpdate;
             }
         }
 
-        public static bool PermCheck
+        public static PermissionCheckLevel PermCheck
         {
             get
             {
                 var LSett = Load();
-                return LSett != null ? LSett.PermissionCheck : true;
+                return LSett.PermissionCheck;
+            }
+            set
+            {
+                var LSett = Load();
+                LSett.PermissionCheck = value;
+                Save(LSett);
             }
         }
 
@@ -64,7 +82,7 @@ namespace FreeMove
 
         private static Settings Load()
         {
-            Settings LoadedSettings;
+            Settings LoadedSettings = null;
 
             if (File.Exists(GetSavePath()))
             {
@@ -74,7 +92,8 @@ namespace FreeMove
                     LoadedSettings = ser.Deserialize(fs) as Settings;
                 }
             }
-            else
+
+            if (LoadedSettings == null)
                 LoadedSettings = new Settings();
             
             return LoadedSettings;
@@ -86,18 +105,6 @@ namespace FreeMove
             return Environment.GetEnvironmentVariable("appdata") + @"\FreeMove\Settings.xml";
         }
 
-        public static void ToggleAutoUpdate()
-        {
-            Settings LoadedSettings = Load();
-            LoadedSettings.AutomaticUpdate = !LoadedSettings.AutomaticUpdate;
-            Save(LoadedSettings);
-        }
-
-        public static void TogglePermCheck()
-        {
-            Settings LoadedSettings = Load();
-            LoadedSettings.PermissionCheck = !LoadedSettings.PermissionCheck;
-            Save(LoadedSettings);
-        }
+        private Settings() { }
     }
 }

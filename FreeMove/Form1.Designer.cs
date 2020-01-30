@@ -61,11 +61,14 @@ namespace FreeMove
             this.checkNowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkOnProgramStartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PermissionCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.safeModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportAnIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gitHubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.safeModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fullToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -183,7 +186,7 @@ namespace FreeMove
             this.checkNowToolStripMenuItem,
             this.checkOnProgramStartToolStripMenuItem});
             this.checkForUpdateToolStripMenuItem.Name = "checkForUpdateToolStripMenuItem";
-            this.checkForUpdateToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.checkForUpdateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.checkForUpdateToolStripMenuItem.Text = "Check for update";
             // 
             // checkNowToolStripMenuItem
@@ -202,13 +205,22 @@ namespace FreeMove
             // 
             // PermissionCheckToolStripMenuItem
             // 
+            this.PermissionCheckToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.noneToolStripMenuItem,
+            this.fastToolStripMenuItem,
+            this.fullToolStripMenuItem});
             this.PermissionCheckToolStripMenuItem.Name = "PermissionCheckToolStripMenuItem";
-            this.PermissionCheckToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-            this.PermissionCheckToolStripMenuItem.Text = "Full permission check";
-            this.PermissionCheckToolStripMenuItem.ToolTipText = "If enabled checks for write permission on each file BEFORE starting to move (it\'s" +
-    " needed to move the files).\r\nElse eventual Unauthorized Access Exceptions will b" +
-    "e detected when moving.";
-            this.PermissionCheckToolStripMenuItem.Click += new System.EventHandler(this.FullPermissionCheckToolStripMenuItem_Click);
+            this.PermissionCheckToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.PermissionCheckToolStripMenuItem.Text = "Permission check";
+            // 
+            // safeModeToolStripMenuItem
+            // 
+            this.safeModeToolStripMenuItem.Checked = true;
+            this.safeModeToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.safeModeToolStripMenuItem.Name = "safeModeToolStripMenuItem";
+            this.safeModeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.safeModeToolStripMenuItem.Text = "Safe mode";
+            this.safeModeToolStripMenuItem.Click += new System.EventHandler(this.SafeModeToolStripMenuItem_Click);
             // 
             // infoToolStripMenuItem
             // 
@@ -242,14 +254,28 @@ namespace FreeMove
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
-            // safeModeToolStripMenuItem
+            // noneToolStripMenuItem
             // 
-            this.safeModeToolStripMenuItem.Checked = true;
-            this.safeModeToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.safeModeToolStripMenuItem.Name = "safeModeToolStripMenuItem";
-            this.safeModeToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-            this.safeModeToolStripMenuItem.Text = "Safe mode";
-            this.safeModeToolStripMenuItem.Click += new System.EventHandler(this.SafeModeToolStripMenuItem_Click);
+            this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
+            this.noneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.noneToolStripMenuItem.Text = "None";
+            this.noneToolStripMenuItem.Click += new System.EventHandler(this.NoneToolStripMenuItem_Click);
+            // 
+            // fastToolStripMenuItem
+            // 
+            this.fastToolStripMenuItem.Checked = true;
+            this.fastToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.fastToolStripMenuItem.Name = "fastToolStripMenuItem";
+            this.fastToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fastToolStripMenuItem.Text = "Fast";
+            this.fastToolStripMenuItem.Click += new System.EventHandler(this.FastToolStripMenuItem_Click);
+            // 
+            // fullToolStripMenuItem
+            // 
+            this.fullToolStripMenuItem.Name = "fullToolStripMenuItem";
+            this.fullToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fullToolStripMenuItem.Text = "Full";
+            this.fullToolStripMenuItem.Click += new System.EventHandler(this.FullToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -303,6 +329,9 @@ namespace FreeMove
         private System.Windows.Forms.ToolStripMenuItem checkOnProgramStartToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem PermissionCheckToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem safeModeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fastToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fullToolStripMenuItem;
     }
 }
 
