@@ -15,6 +15,10 @@ You can use this tool to move programs that install on C:\ by default to another
 
 [Download the latest release](https://github.com/imDema/FreeMove/releases/latest)
 
+```
+scoop install freemove
+```
+
 ### Usage
 
 Run the executable and use the GUI
