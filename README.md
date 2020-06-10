@@ -10,10 +10,13 @@ You can use this tool to move programs that install on C:\ by default to another
 2. A [symbolic link](https://www.wikiwand.com/en/NTFS_junction_point) is created from the old location redirecting to the new one. Any program trying to access a file in the old location will automatically be redirected to its new location
 
 ## Download
-
 [![Github All Releases](https://img.shields.io/github/downloads/imDema/FreeMove/total.svg)](https://github.com/imDema/FreeMove/releases/latest)
 
+#### From GitHub
+
 [Download the latest release](https://github.com/imDema/FreeMove/releases/latest)
+
+#### From Scoop
 
 ```
 scoop install freemove
