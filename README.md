@@ -44,12 +44,10 @@ Uninstall the program just as you would normally without deleting the junction. 
 ## Moving back a program
 Delete the junction in the old location (this won't delete the content) and move the directory back to its original position
 
+## Contributing
 
----------------------------------------------------------------------
+The project is currently being maintained for fixes, but no new features are currently in development or planned.
 
-Want to offer me a beer?
-```
-BTC:    326HDAYj5bJ5sDn6RcnHnvNEfDkk466USX
-ETH:    0xf48E9A99602D6eCC685E33837A47130D7C5fd65D
-NANO:   xrb_3ntghh4bej57is4noa1sxaiefgxinwfqraxm5donp1qdeytnmnoamdq9xfxh
-```
+I wrote the tool alone and I am currently the only developer, at the moment I'm finishing my MSc and I'm too busy with other projects to work on new features.
+
+I'll keep watching the project and managing possible contributions, so, if you are interested in contributing, leave an issue or comment on an open issue and let me know!
