@@ -31,13 +31,31 @@ namespace FreeMove.IO
         bool sameDrive;
         CancellationTokenSource cts = new CancellationTokenSource();
         CopyOperation innerCopy;
+        Form1 form = new Form1();
 
         public MoveOperation(string pathFrom, string pathTo)
         {
             this.pathFrom = pathFrom;
             this.pathTo = pathTo;
             sameDrive = string.Equals(Path.GetPathRoot(pathFrom), Path.GetPathRoot(pathTo), StringComparison.OrdinalIgnoreCase);
-
+            if (form.chkBox_createDest.Checked && !Directory.Exists(pathTo))
+            {
+                try
+                {
+                    Directory.CreateDirectory(pathTo);
+                }
+                catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
+                {
+                    if (e is UnauthorizedAccessException)
+                    {
+                        throw new UnauthorizedAccessException("Lacking required permissions to create the destination directory. Try running as administrator.");
+                    }
+                    else
+                    {
+                        throw new IOException("Unable to create directory " + pathTo, e);
+                    }
+                }
+            }
             innerCopy = new CopyOperation(pathFrom, pathTo);
         }
 

@@ -53,7 +53,7 @@ namespace FreeMove
             this.label2 = new System.Windows.Forms.Label();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.button_Move = new System.Windows.Forms.Button();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.chkBox_originalHidden = new System.Windows.Forms.CheckBox();
             this.button_Close = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,6 +69,7 @@ namespace FreeMove
             this.reportAnIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gitHubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chkBox_createDest = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -138,15 +139,15 @@ namespace FreeMove
             this.button_Move.UseVisualStyleBackColor = true;
             this.button_Move.Click += new System.EventHandler(this.Button_Move_Click);
             // 
-            // checkBox1
+            // chkBox_originalHidden
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(15, 95);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(154, 17);
-            this.checkBox1.TabIndex = 5;
-            this.checkBox1.Text = "Set original folder to hidden";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.chkBox_originalHidden.AutoSize = true;
+            this.chkBox_originalHidden.Location = new System.Drawing.Point(15, 95);
+            this.chkBox_originalHidden.Name = "chkBox_originalHidden";
+            this.chkBox_originalHidden.Size = new System.Drawing.Size(154, 17);
+            this.chkBox_originalHidden.TabIndex = 5;
+            this.chkBox_originalHidden.Text = "Set original folder to hidden";
+            this.chkBox_originalHidden.UseVisualStyleBackColor = true;
             // 
             // button_Close
             // 
@@ -186,7 +187,7 @@ namespace FreeMove
             this.checkNowToolStripMenuItem,
             this.checkOnProgramStartToolStripMenuItem});
             this.checkForUpdateToolStripMenuItem.Name = "checkForUpdateToolStripMenuItem";
-            this.checkForUpdateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.checkForUpdateToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.checkForUpdateToolStripMenuItem.Text = "Check for update";
             // 
             // checkNowToolStripMenuItem
@@ -210,13 +211,13 @@ namespace FreeMove
             this.fastToolStripMenuItem,
             this.fullToolStripMenuItem});
             this.PermissionCheckToolStripMenuItem.Name = "PermissionCheckToolStripMenuItem";
-            this.PermissionCheckToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.PermissionCheckToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.PermissionCheckToolStripMenuItem.Text = "Permission check";
             // 
             // noneToolStripMenuItem
             // 
             this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-            this.noneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.noneToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.noneToolStripMenuItem.Text = "None";
             this.noneToolStripMenuItem.ToolTipText = "Don\'t check any file before moving";
             this.noneToolStripMenuItem.Click += new System.EventHandler(this.NoneToolStripMenuItem_Click);
@@ -226,7 +227,7 @@ namespace FreeMove
             this.fastToolStripMenuItem.Checked = true;
             this.fastToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.fastToolStripMenuItem.Name = "fastToolStripMenuItem";
-            this.fastToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fastToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.fastToolStripMenuItem.Text = "Fast";
             this.fastToolStripMenuItem.ToolTipText = "Check all .exe and .dll files before moving";
             this.fastToolStripMenuItem.Click += new System.EventHandler(this.FastToolStripMenuItem_Click);
@@ -234,7 +235,7 @@ namespace FreeMove
             // fullToolStripMenuItem
             // 
             this.fullToolStripMenuItem.Name = "fullToolStripMenuItem";
-            this.fullToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fullToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.fullToolStripMenuItem.Text = "Full";
             this.fullToolStripMenuItem.ToolTipText = "Check all files before moving";
             this.fullToolStripMenuItem.Click += new System.EventHandler(this.FullToolStripMenuItem_Click);
@@ -244,7 +245,7 @@ namespace FreeMove
             this.safeModeToolStripMenuItem.Checked = true;
             this.safeModeToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.safeModeToolStripMenuItem.Name = "safeModeToolStripMenuItem";
-            this.safeModeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.safeModeToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.safeModeToolStripMenuItem.Text = "Safe mode";
             this.safeModeToolStripMenuItem.Click += new System.EventHandler(this.SafeModeToolStripMenuItem_Click);
             // 
@@ -280,13 +281,26 @@ namespace FreeMove
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
+            // chkBox_createDest
+            // 
+            this.chkBox_createDest.AutoSize = true;
+            this.chkBox_createDest.Checked = true;
+            this.chkBox_createDest.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBox_createDest.Location = new System.Drawing.Point(175, 95);
+            this.chkBox_createDest.Name = "chkBox_createDest";
+            this.chkBox_createDest.Size = new System.Drawing.Size(140, 17);
+            this.chkBox_createDest.TabIndex = 9;
+            this.chkBox_createDest.Text = "Create destination folder";
+            this.chkBox_createDest.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(565, 150);
+            this.Controls.Add(this.chkBox_createDest);
             this.Controls.Add(this.button_Close);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.chkBox_originalHidden);
             this.Controls.Add(this.button_Move);
             this.Controls.Add(this.button_BrowseTo);
             this.Controls.Add(this.textBox_To);
@@ -319,7 +333,7 @@ namespace FreeMove
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button button_Move;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox chkBox_originalHidden;
         private System.Windows.Forms.Button button_Close;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem infoToolStripMenuItem;
@@ -335,6 +349,7 @@ namespace FreeMove
         private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fastToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fullToolStripMenuItem;
+        public System.Windows.Forms.CheckBox chkBox_createDest;
     }
 }
 

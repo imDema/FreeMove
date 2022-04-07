@@ -110,7 +110,7 @@ namespace FreeMove
                     await BeginMove(source, destination);
                     Symlink(destination, source);
 
-                    if (checkBox1.Checked)
+                    if (chkBox_originalHidden.Checked)
                     {
                         DirectoryInfo olddir = new DirectoryInfo(source);
                         var attrib = File.GetAttributes(source);
@@ -232,7 +232,7 @@ namespace FreeMove
             };
             Tip.SetToolTip(this.textBox_From, "Select the folder you want to move");
             Tip.SetToolTip(this.textBox_To, "Select where you want to move the folder");
-            Tip.SetToolTip(this.checkBox1, "Select whether you want to hide the shortcut which is created in the old location or not");
+            Tip.SetToolTip(this.chkBox_originalHidden, "Select whether you want to hide the shortcut which is created in the old location or not");
         }
 
         private void Reset()
