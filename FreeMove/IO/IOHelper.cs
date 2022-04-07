@@ -96,7 +96,8 @@ namespace FreeMove
 
             try
             {
-                if (!Directory.Exists(Directory.GetParent(destination).FullName))
+                Form1 form = new Form1();
+                if (!form.chkBox_createDest.Checked && !Directory.Exists(Directory.GetParent(destination).FullName))
                     exceptions.Add(new Exception("Destination folder does not exist"));
             }
             catch(Exception e)
