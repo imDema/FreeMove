@@ -52,7 +52,7 @@ namespace FreeMove.IO
                     }
                     else
                     {
-                        throw new IOException("Unable to create directory " + pathTo, e);
+                        throw new IOException("Unable to create the destination directory.");
                     }
                 }
             }
