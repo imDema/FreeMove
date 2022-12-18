@@ -86,5 +86,5 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: Binary
+        name: ${{ env.Project_Name }}_${{ matrix.configuration}}.exe
         path: ${{ env.Project_Name }}\bin\${{ matrix.configuration }}\${{ env.Target }}\${{ env.Project_Name }}.exe
