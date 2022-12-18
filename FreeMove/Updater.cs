@@ -102,7 +102,8 @@ namespace FreeMove
             Stream ResponseStream = await GetGitHubStreamAsync();
 
             TextReader Reader = new StreamReader(ResponseStream);
-            NewVersion = VersionRegex().Match(Reader.ReadToEnd()).Groups[1].Value;
+            const string pattern = "\"tag_name\":\"([0-9.]{5,9})\"";
+            NewVersion = Regex.Match(Reader.ReadToEnd(), pattern,RegexOptions.Multiline).Groups[1].Value;
 
             if (NewVersion == "") throw new Exception(Properties.Resources.GitHubErrorMessage);
             return CurrentVersion != NewVersion;
@@ -132,8 +133,5 @@ namespace FreeMove
                 return null;
             }
         }
-
-        [GeneratedRegex("\"tag_name\":\"([0-9.]{5,9})\"", RegexOptions.Multiline)]
-        private static partial Regex VersionRegex();
     }
 }
