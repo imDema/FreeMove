@@ -29,21 +29,21 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Net.Http;
 
 namespace FreeMove
 {
     public partial class Updater : Form
     {
-        string CurrentVersion = "", NewVersion = "";
-        bool Silent = false;
+        readonly string CurrentVersion;
+        string NewVersion = "";
+        readonly bool Silent;
 
         public Updater(bool Silent)
         {
             this.Silent = Silent;
-            InitializeComponent();
-        }
-        public Updater()
-        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            this.CurrentVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
             InitializeComponent();
         }
 
@@ -80,7 +80,7 @@ namespace FreeMove
                     button_Ok.Enabled = true;
                     button_Ok.Click += delegate { Dispose(); };
                 }
-                else throw ex;
+                else throw;
             }
         }
 
@@ -98,34 +98,23 @@ namespace FreeMove
 
         public async Task<bool> CheckGitHub()
         {
-            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            Stream ResponseStream = Silent ? GetGitHubStream() : await GetGitHubStreamAsync();
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
+            Stream ResponseStream = await GetGitHubStreamAsync();
 
             TextReader Reader = new StreamReader(ResponseStream);
-            const string pattern = "\"tag_name\":\"([0-9.]{5,9})\"";
-            NewVersion = Regex.Match(Reader.ReadToEnd(), pattern,RegexOptions.Multiline).Groups[1].Value;
+            NewVersion = VersionRegex().Match(Reader.ReadToEnd()).Groups[1].Value;
 
             if (NewVersion == "") throw new Exception(Properties.Resources.GitHubErrorMessage);
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            CurrentVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
             return CurrentVersion != NewVersion;
         }
 
         private async Task<Stream> GetGitHubStreamAsync()
         {
-            HttpWebRequest Req = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/ImDema/FreeMove/releases/latest");
-            Req.UserAgent = Properties.Resources.UserAgent;
-            HttpWebResponse Response = (HttpWebResponse)await Req.GetResponseAsync();
-            return Response.GetResponseStream();
+            using var Client = new HttpClient();
+            Client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue(Properties.Resources.UserAgent, CurrentVersion));
+            var Resp = await Client.GetStreamAsync("https://api.github.com/repos/ImDema/FreeMove/releases/latest");
+            return Resp;
         }
-        private Stream GetGitHubStream()
-        {
-            HttpWebRequest Req = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/ImDema/FreeMove/releases/latest");
-            Req.UserAgent = Properties.Resources.UserAgent;
-            HttpWebResponse Response = (HttpWebResponse) Req.GetResponse();
-            return Response.GetResponseStream();
-        }
-
 
         public static async Task<Updater> SilentCheck()
         {
@@ -143,5 +132,8 @@ namespace FreeMove
                 return null;
             }
         }
+
+        [GeneratedRegex("\"tag_name\":\"([0-9.]{5,9})\"", RegexOptions.Multiline)]
+        private static partial Regex VersionRegex();
     }
 }

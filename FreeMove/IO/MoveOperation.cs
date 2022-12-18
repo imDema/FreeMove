@@ -38,6 +38,24 @@ namespace FreeMove.IO
             this.pathTo = pathTo;
             sameDrive = string.Equals(Path.GetPathRoot(pathFrom), Path.GetPathRoot(pathTo), StringComparison.OrdinalIgnoreCase);
 
+            if (form.chkBox_createDest.Checked && !Directory.Exists(pathTo))
+            {
+                try
+                {
+                    Directory.CreateDirectory(Directory.GetParent(pathTo).FullName);
+                }
+                catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
+                {
+                    if (e is UnauthorizedAccessException)
+                    {
+                        throw new UnauthorizedAccessException("Lacking required permissions to create the destination directory. Try running as administrator.");
+                    }
+                    else
+                    {
+                        throw new IOException("Unable to create the destination directory.");
+                    }
+                }
+            }
             innerCopy = new CopyOperation(pathFrom, pathTo);
         }
 
