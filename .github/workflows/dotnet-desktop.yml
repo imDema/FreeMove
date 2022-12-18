@@ -49,4 +49,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.Project_Name }}_${{ matrix.runtime }}.exe
-        path: ${{ env.Project_Name }}\bin\Release\${{ env.Target }}\${{ matrix.runtime }}\${{ env.Project_Name }}.exe
+        path: ${{ env.Project_Name }}\bin\Release\${{ env.Target }}\${{ matrix.runtime }}\publish\${{ env.Project_Name }}.exe
