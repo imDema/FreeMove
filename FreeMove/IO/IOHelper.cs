@@ -117,7 +117,7 @@ namespace FreeMove
 
             try
             {
-                System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(source);
+                // DEPRECATED // System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(source);
                 //Try creating a file to check permissions
                 File.Create(TestFile).Close();
             }
@@ -153,9 +153,15 @@ namespace FreeMove
             {
                 size += file.Length;
             }
-            DriveInfo dstDrive = new DriveInfo(Path.GetPathRoot(destination));
-            if (dstDrive.AvailableFreeSpace < size)
-                exceptions.Add(new Exception($"There is not enough free space on the {dstDrive.Name} disk. {size / 1000000}MB required, {dstDrive.AvailableFreeSpace / 1000000} available."));
+            try
+            {
+                DriveInfo dstDrive = new(Path.GetPathRoot(destination));
+                if (dstDrive.AvailableFreeSpace < size)
+                    exceptions.Add(new Exception($"There is not enough free space on the {dstDrive.Name} disk. {size / 1000000}MB required, {dstDrive.AvailableFreeSpace / 1000000} available."));
+            } catch (Exception e)
+            {
+                exceptions.Add(e);
+            }
 
             if (exceptions.Count > 0)
                 throw new AggregateException(exceptions);

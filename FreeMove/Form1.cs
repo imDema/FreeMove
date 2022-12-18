@@ -289,22 +289,31 @@ namespace FreeMove
             Close();
         }
 
+        private void OpenURL(string url)
+        {
+            var proc = new ProcessStartInfo(url)
+            {
+                UseShellExecute = true
+            };
+            Process.Start(proc);
+        }
+
         //Open GitHub page
         private void GitHubToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/imDema/FreeMove");
+            OpenURL("https://github.com/imDema/FreeMove");
         }
 
         //Open the report an issue page on GitHub
         private void ReportAnIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/imDema/FreeMove/issues/new");
+            OpenURL("https://github.com/imDema/FreeMove/issues/new");
         }
 
         //Show an update dialog
         private void CheckNowToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new Updater().ShowDialog();
+            new Updater(false).ShowDialog();
         }
 
         //Set to check updates on program start

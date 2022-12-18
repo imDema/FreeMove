@@ -42,7 +42,7 @@ namespace FreeMove.IO
             {
                 try
                 {
-                    Directory.CreateDirectory(pathTo);
+                    Directory.CreateDirectory(Directory.GetParent(pathTo).FullName);
                 }
                 catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
                 {
