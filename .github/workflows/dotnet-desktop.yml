@@ -2,7 +2,7 @@ name: .NET Core Desktop
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "develop" ]
   pull_request:
     branches: [ "master" ]
 
@@ -48,5 +48,5 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.Project_Name }}_${{ matrix.configuration}}.exe
+        name: ${{ env.Project_Name }}_${{ matrix.runtime }}.exe
         path: ${{ env.Project_Name }}\bin\Release\${{ env.Target }}\${{ matrix.runtime }}\${{ env.Project_Name }}.exe
