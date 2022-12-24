@@ -2,18 +2,11 @@
   <PropertyGroup>
     <TargetFramework>net7.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
-    <PublishTrimmed>true</PublishTrimmed>
     <PublishSingleFile>true</PublishSingleFile>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>partial</TrimMode>
     <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.1.1.%2a</ApplicationVersion>
