@@ -18,7 +18,7 @@ jobs:
     
     env:
       Project_Name: FreeMove
-      Target: net7.0-windows
+      Target: net6.0-windows
       
     steps:
     - name: Checkout
@@ -30,7 +30,7 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 6.0.x
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
@@ -42,7 +42,7 @@ jobs:
       
     # Build the solution
     - name: Build the solution
-      run: dotnet publish -c Release -r ${{ matrix.runtime }} --self-contained true
+      run: dotnet publish -c Release -r ${{ matrix.runtime }}
 
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload build artifacts
