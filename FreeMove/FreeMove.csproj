@@ -4,8 +4,6 @@
     <OutputType>WinExe</OutputType>
     <PublishUrl>publish\</PublishUrl>
     <PublishSingleFile>true</PublishSingleFile>
-    <PublishTrimmed>true</PublishTrimmed>
-    <TrimMode>partial</TrimMode>
     <UpdateEnabled>false</UpdateEnabled>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
