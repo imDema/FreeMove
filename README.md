@@ -48,6 +48,6 @@ Delete the junction in the old location (this won't delete the content) and move
 
 The project is currently being maintained for fixes, but no new features are currently in development or planned.
 
-I wrote the tool alone and I am currently the only developer, at the moment I'm finishing my MSc and I'm too busy with other projects to work on new features.
+I wrote the tool alone and I am currently the only developer, at the moment I'm pursuing my PhD and I'm too busy with other projects to work on new features.
 
 I'll keep watching the project and managing possible contributions, so, if you are interested in contributing, leave an issue or comment on an open issue and let me know!
