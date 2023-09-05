@@ -70,30 +70,31 @@ namespace FreeMove
             this.gitHubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chkBox_createDest = new System.Windows.Forms.CheckBox();
+            this.chkBox_movetoSub = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 34);
+            this.label1.Location = new System.Drawing.Point(12, 31);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 13);
+            this.label1.Size = new System.Drawing.Size(65, 12);
             this.label1.TabIndex = 0;
             this.label1.Text = "Move From:";
             // 
             // textBox_From
             // 
-            this.textBox_From.Location = new System.Drawing.Point(82, 34);
+            this.textBox_From.Location = new System.Drawing.Point(82, 31);
             this.textBox_From.Name = "textBox_From";
-            this.textBox_From.Size = new System.Drawing.Size(383, 20);
+            this.textBox_From.Size = new System.Drawing.Size(383, 21);
             this.textBox_From.TabIndex = 1;
             // 
             // button_BrowseFrom
             // 
-            this.button_BrowseFrom.Location = new System.Drawing.Point(475, 34);
+            this.button_BrowseFrom.Location = new System.Drawing.Point(475, 31);
             this.button_BrowseFrom.Name = "button_BrowseFrom";
-            this.button_BrowseFrom.Size = new System.Drawing.Size(75, 23);
+            this.button_BrowseFrom.Size = new System.Drawing.Size(75, 21);
             this.button_BrowseFrom.TabIndex = 2;
             this.button_BrowseFrom.Text = "Browse...";
             this.button_BrowseFrom.UseVisualStyleBackColor = true;
@@ -101,9 +102,9 @@ namespace FreeMove
             // 
             // button_BrowseTo
             // 
-            this.button_BrowseTo.Location = new System.Drawing.Point(475, 58);
+            this.button_BrowseTo.Location = new System.Drawing.Point(475, 54);
             this.button_BrowseTo.Name = "button_BrowseTo";
-            this.button_BrowseTo.Size = new System.Drawing.Size(75, 23);
+            this.button_BrowseTo.Size = new System.Drawing.Size(75, 21);
             this.button_BrowseTo.TabIndex = 4;
             this.button_BrowseTo.Text = "Browse...";
             this.button_BrowseTo.UseVisualStyleBackColor = true;
@@ -111,17 +112,17 @@ namespace FreeMove
             // 
             // textBox_To
             // 
-            this.textBox_To.Location = new System.Drawing.Point(82, 60);
+            this.textBox_To.Location = new System.Drawing.Point(82, 55);
             this.textBox_To.Name = "textBox_To";
-            this.textBox_To.Size = new System.Drawing.Size(383, 20);
+            this.textBox_To.Size = new System.Drawing.Size(383, 21);
             this.textBox_To.TabIndex = 3;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 60);
+            this.label2.Location = new System.Drawing.Point(12, 55);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(23, 13);
+            this.label2.Size = new System.Drawing.Size(23, 12);
             this.label2.TabIndex = 3;
             this.label2.Text = "To:";
             // 
@@ -131,9 +132,9 @@ namespace FreeMove
             // 
             // button_Move
             // 
-            this.button_Move.Location = new System.Drawing.Point(475, 118);
+            this.button_Move.Location = new System.Drawing.Point(475, 109);
             this.button_Move.Name = "button_Move";
-            this.button_Move.Size = new System.Drawing.Size(75, 23);
+            this.button_Move.Size = new System.Drawing.Size(75, 21);
             this.button_Move.TabIndex = 6;
             this.button_Move.Text = "Move";
             this.button_Move.UseVisualStyleBackColor = true;
@@ -142,18 +143,18 @@ namespace FreeMove
             // chkBox_originalHidden
             // 
             this.chkBox_originalHidden.AutoSize = true;
-            this.chkBox_originalHidden.Location = new System.Drawing.Point(15, 95);
+            this.chkBox_originalHidden.Location = new System.Drawing.Point(15, 88);
             this.chkBox_originalHidden.Name = "chkBox_originalHidden";
-            this.chkBox_originalHidden.Size = new System.Drawing.Size(154, 17);
+            this.chkBox_originalHidden.Size = new System.Drawing.Size(198, 16);
             this.chkBox_originalHidden.TabIndex = 5;
             this.chkBox_originalHidden.Text = "Set original folder to hidden";
             this.chkBox_originalHidden.UseVisualStyleBackColor = true;
             // 
             // button_Close
             // 
-            this.button_Close.Location = new System.Drawing.Point(12, 118);
+            this.button_Close.Location = new System.Drawing.Point(12, 109);
             this.button_Close.Name = "button_Close";
-            this.button_Close.Size = new System.Drawing.Size(75, 23);
+            this.button_Close.Size = new System.Drawing.Size(75, 21);
             this.button_Close.TabIndex = 7;
             this.button_Close.Text = "Close";
             this.button_Close.UseVisualStyleBackColor = true;
@@ -286,18 +287,31 @@ namespace FreeMove
             this.chkBox_createDest.AutoSize = true;
             this.chkBox_createDest.Checked = true;
             this.chkBox_createDest.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBox_createDest.Location = new System.Drawing.Point(175, 95);
+            this.chkBox_createDest.Location = new System.Drawing.Point(175, 88);
             this.chkBox_createDest.Name = "chkBox_createDest";
-            this.chkBox_createDest.Size = new System.Drawing.Size(140, 17);
+            this.chkBox_createDest.Size = new System.Drawing.Size(174, 16);
             this.chkBox_createDest.TabIndex = 9;
             this.chkBox_createDest.Text = "Create destination folder";
             this.chkBox_createDest.UseVisualStyleBackColor = true;
             // 
+            // chkBox_movetoSub
+            // 
+            this.chkBox_movetoSub.AutoSize = true;
+            this.chkBox_movetoSub.Checked = true;
+            this.chkBox_movetoSub.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBox_movetoSub.Location = new System.Drawing.Point(355, 87);
+            this.chkBox_movetoSub.Name = "chkBox_movetoSub";
+            this.chkBox_movetoSub.Size = new System.Drawing.Size(144, 16);
+            this.chkBox_movetoSub.TabIndex = 9;
+            this.chkBox_movetoSub.Text = "Move to subdirectory";
+            this.chkBox_movetoSub.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(565, 150);
+            this.ClientSize = new System.Drawing.Size(565, 138);
+            this.Controls.Add(this.chkBox_movetoSub);
             this.Controls.Add(this.chkBox_createDest);
             this.Controls.Add(this.button_Close);
             this.Controls.Add(this.chkBox_originalHidden);
@@ -350,6 +364,7 @@ namespace FreeMove
         private System.Windows.Forms.ToolStripMenuItem fastToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fullToolStripMenuItem;
         public System.Windows.Forms.CheckBox chkBox_createDest;
+        public System.Windows.Forms.CheckBox chkBox_movetoSub;
     }
 }
 
